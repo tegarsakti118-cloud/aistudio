@@ -4,6 +4,8 @@
   const esc = (v) => (Nexora.utils && Nexora.utils.escapeHtml ? Nexora.utils.escapeHtml(v) : String(v ?? ''));
 
   let selectedProjectId = null;
+  let initialized = false;
+  let renderRequestActive = false;
 
   function getProducibleProjects(wf) {
     return wf.projects.filter((p) => {
@@ -132,6 +134,13 @@
   }
 
   function init() {
+    // Prevent duplicate event listeners if navigation or boot code initializes this view again.
+    if (initialized) {
+      render();
+      return;
+    }
+    initialized = true;
+
     const selectEl = document.getElementById('select-video-project');
     if (selectEl) {
       selectEl.addEventListener('change', (e) => {
@@ -143,11 +152,17 @@
     const btnRender = document.getElementById('btn-render-video');
     if (btnRender) {
       btnRender.addEventListener('click', async () => {
+        if (renderRequestActive) return;
+        renderRequestActive = true;
         const wf = Nexora.workflowEngine;
         const vr = Nexora.videoRenderer;
         const project = wf.projects.find((p) => p.id === selectedProjectId);
         const script = getScriptForProject(wf, project);
-        if (!project || !script) return;
+        if (!project || !script) {
+          renderRequestActive = false;
+          Nexora.notificationsUI?.showToast('Proyek atau naskah belum tersedia.', 'warning');
+          return;
+        }
 
         const progWrap = document.getElementById('video-render-progress-wrap');
         const progBar = document.getElementById('video-render-progress-bar');
@@ -189,11 +204,76 @@
         } catch (err) {
           Nexora.notificationsUI.showToast(`Render video: ${err.message}`, 'warning');
         } finally {
+          renderRequestActive = false;
           if (progWrap) progWrap.classList.add('hidden');
           if (canvas) canvas.classList.add('hidden');
           render();
           if (Nexora.qualityControlView) Nexora.qualityControlView.render();
           if (Nexora.contentCalendarView) Nexora.contentCalendarView.render();
+        }
+      });
+    }
+
+    const btnAgnes = document.getElementById('btn-agnes-scenes');
+    if (btnAgnes) {
+      btnAgnes.addEventListener('click', async () => {
+        if (btnAgnes.dataset.busy === '1') return;
+        const wf = Nexora.workflowEngine;
+        const project = wf && wf.projects.find((p) => p.id === selectedProjectId);
+        const script = getScriptForProject(wf, project);
+        const service = Nexora.agnesVideoService;
+        const panel = document.getElementById('agnes-scenes-panel');
+        const statusEl = document.getElementById('agnes-scenes-status');
+        const progressEl = document.getElementById('agnes-scenes-progress');
+        const resultsEl = document.getElementById('agnes-scenes-results');
+        if (!project || !script || !service) {
+          Nexora.notificationsUI.showToast('Proyek, naskah, atau modul Agnes belum siap.', 'warning');
+          return;
+        }
+        btnAgnes.dataset.busy = '1';
+        btnAgnes.disabled = true;
+        btnAgnes.classList.add('opacity-50');
+        if (panel) panel.classList.remove('hidden');
+        if (resultsEl) resultsEl.innerHTML = '';
+        if (statusEl) statusEl.textContent = 'Memproses';
+        try {
+          const clips = await service.generateScenes({
+            project,
+            script,
+            onProgress: (p) => {
+              if (!progressEl) return;
+              const stage = p.phase === 'creating' ? 'Mengirim permintaan' : 'Menunggu hasil dari Agnes';
+              const scene = p.sceneNo || (p.index + 1);
+              progressEl.textContent = `${stage} • Adegan ${scene}/${p.total}${p.progress != null ? ` • ${p.progress}%` : ''}`;
+            },
+            onClip: (clip) => {
+              if (!resultsEl) return;
+              const row = document.createElement('div');
+              row.className = 'rounded-xl border border-violet-200 bg-white p-2 flex items-center justify-between gap-2';
+              const label = document.createElement('span');
+              label.className = 'text-[11px] font-bold text-slate-700';
+              label.textContent = `Adegan ${clip.sceneNo} • Selesai`;
+              const link = document.createElement('a');
+              link.href = clip.url;
+              link.target = '_blank';
+              link.rel = 'noopener';
+              link.textContent = 'Buka klip';
+              link.className = 'text-[11px] font-bold text-violet-700 underline';
+              row.append(label, link);
+              resultsEl.appendChild(row);
+            }
+          });
+          if (statusEl) statusEl.textContent = `${clips.length} klip selesai`;
+          if (progressEl) progressEl.textContent = 'Semua adegan selesai. Klip tersedia satu per satu di bawah.';
+          Nexora.notificationsUI.showToast(`${clips.length} klip adegan berhasil dibuat oleh Agnes.`, 'success');
+        } catch (err) {
+          if (statusEl) statusEl.textContent = 'Gagal';
+          if (progressEl) progressEl.textContent = err.message || 'Proses gagal.';
+          Nexora.notificationsUI.showToast(`Agnes: ${err.message}`, 'warning');
+        } finally {
+          btnAgnes.dataset.busy = '0';
+          btnAgnes.disabled = false;
+          btnAgnes.classList.remove('opacity-50');
         }
       });
     }

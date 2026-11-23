@@ -68,6 +68,8 @@
     safeRun('ideaBankView', () => Nexora.ideaBankView && Nexora.ideaBankView.init());
     safeRun('scriptManagementView', () => Nexora.scriptManagementView && Nexora.scriptManagementView.init());
     safeRun('videoProductionView', () => Nexora.videoProductionView && Nexora.videoProductionView.init());
+    safeRun('characterStudioView', () => Nexora.characterStudioView && Nexora.characterStudioView.init());
+    safeRun('storyboardStudioView', () => Nexora.storyboardStudioView && Nexora.storyboardStudioView.init());
     safeRun('qualityControlView', () => Nexora.qualityControlView && Nexora.qualityControlView.init());
     safeRun('contentCalendarView', () => Nexora.contentCalendarView && Nexora.contentCalendarView.init());
     safeRun('settingsView', () => Nexora.settingsView && Nexora.settingsView.init());

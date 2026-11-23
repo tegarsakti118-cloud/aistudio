@@ -9,6 +9,8 @@
     { id: 'idea-bank', label: 'Idea Bank', icon: '💡', phase: 'Fase 3 • Aktif' },
     { id: 'script-management', label: 'Script Management', icon: '📝', phase: 'Fase 4 • Aktif' },
     { id: 'video-production', label: 'Video Production', icon: '🎬', phase: 'Fase 5 • Aktif' },
+    { id: 'character-studio', label: 'Character Studio', icon: '🎭', phase: 'Fase 1 • Aktif' },
+    { id: 'storyboard-studio', label: 'Storyboard Studio', icon: '🎞️', phase: 'Fase 1 • Aktif' },
     { id: 'quality-control', label: 'Quality Control', icon: '✅', phase: 'Fase 5 • Aktif' },
     { id: 'content-calendar', label: 'Content Calendar', icon: '📅', phase: 'Fase 4 • Aktif' },
     { id: 'analytics', label: 'Analytics', icon: '📈', phase: 'Fase 6' },
@@ -23,6 +25,8 @@
     'idea-bank',
     'script-management',
     'video-production',
+    'character-studio',
+    'storyboard-studio',
     'quality-control',
     'content-calendar',
     'settings'
@@ -73,6 +77,12 @@
       }
       if (pageId === 'video-production' && Nexora.videoProductionView) {
         Nexora.videoProductionView.render();
+      }
+      if (pageId === 'character-studio' && Nexora.characterStudioView) {
+        Nexora.characterStudioView.render();
+      }
+      if (pageId === 'storyboard-studio' && Nexora.storyboardStudioView) {
+        Nexora.storyboardStudioView.render();
       }
       if (pageId === 'quality-control' && Nexora.qualityControlView) {
         Nexora.qualityControlView.render();

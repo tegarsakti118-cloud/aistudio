@@ -464,10 +464,16 @@
       const stepCfg = Nexora.getWorkflowStep(project.current_step);
       if (!stepCfg) return;
 
-      if (stepCfg.type === 'approval_gate' || stepCfg.type === 'manual_publish') {
+      // Persetujuan produksi dijalankan otomatis oleh sistem. Direktur hanya
+      // menangani publikasi akhir, karena upload ke media sosial tetap manual.
+      if (stepCfg.type === 'approval_gate') {
+        await this.approveCurrentGate('Persetujuan otomatis oleh Nexora AI Studio.');
+        return;
+      }
+      if (stepCfg.type === 'manual_publish') {
         Nexora.state.pushNotification(
-          `Langkah ${stepCfg.step} (${stepCfg.label}) menunggu aksi Direktur.`,
-          'warning',
+          'Video final siap dipublikasikan. Tugas Direktur hanya mengunggahnya ke media sosial.',
+          'success',
           stepCfg.sourceEmployeeId || null
         );
         return;

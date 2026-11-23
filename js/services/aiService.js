@@ -68,8 +68,28 @@
       });
 
       if (error) {
-        throw new Error(error.message || 'Gagal memanggil Supabase Edge Function.');
+        let detail = error.message || 'Gagal memanggil Edge Function.';
+        if (error.context) {
+          const status = error.context.status ? `HTTP ${error.context.status}` : '';
+          try {
+            const rawBody = await error.context.text();
+            if (rawBody) {
+              try {
+                const parsed = JSON.parse(rawBody);
+                detail = `${status} ${parsed.error || parsed.message || rawBody}`.trim();
+              } catch {
+                detail = `${status} ${rawBody}`.trim();
+              }
+            } else if (status) {
+              detail = `${status} (${detail})`;
+            }
+          } catch {
+            if (status) detail = `${status} (${detail})`;
+          }
+        }
+        throw new Error(detail);
       }
+
       if (!data || data.error) {
         throw new Error((data && data.error) || 'Respon AI Edge Function tidak valid.');
       }

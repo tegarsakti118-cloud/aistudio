@@ -65,6 +65,8 @@
     safeRun('workflowEngine', () => Nexora.workflowEngine && Nexora.workflowEngine.init());
     safeRun('trendResearchView', () => Nexora.trendResearchView && Nexora.trendResearchView.init());
     safeRun('ideaBankView', () => Nexora.ideaBankView && Nexora.ideaBankView.init());
+    safeRun('scriptManagementView', () => Nexora.scriptManagementView && Nexora.scriptManagementView.init());
+    safeRun('contentCalendarView', () => Nexora.contentCalendarView && Nexora.contentCalendarView.init());
     safeRun('settingsView', () => Nexora.settingsView && Nexora.settingsView.init());
     safeRun('dashboardView', () => Nexora.dashboardView && Nexora.dashboardView.init());
     safeRun('navigation', () => Nexora.navigation && Nexora.navigation.init());
@@ -157,6 +159,8 @@
           if (Nexora.dashboardView) Nexora.dashboardView.render();
           if (Nexora.trendResearchView) Nexora.trendResearchView.render();
           if (Nexora.ideaBankView) Nexora.ideaBankView.render();
+          if (Nexora.scriptManagementView) Nexora.scriptManagementView.render();
+          if (Nexora.contentCalendarView) Nexora.contentCalendarView.render();
         })
         .catch(() => {});
     }

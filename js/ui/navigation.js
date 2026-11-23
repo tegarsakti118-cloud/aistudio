@@ -7,10 +7,10 @@
     { id: 'employees', label: 'Employees', icon: '🤖', phase: 'Fase 1 • Aktif' },
     { id: 'trend-research', label: 'Trend Research', icon: '🔍', phase: 'Fase 3 • Aktif' },
     { id: 'idea-bank', label: 'Idea Bank', icon: '💡', phase: 'Fase 3 • Aktif' },
-    { id: 'script-management', label: 'Script Management', icon: '📝', phase: 'Fase 4' },
+    { id: 'script-management', label: 'Script Management', icon: '📝', phase: 'Fase 4 • Aktif' },
     { id: 'video-production', label: 'Video Production', icon: '🎬', phase: 'Fase 5' },
     { id: 'quality-control', label: 'Quality Control', icon: '✅', phase: 'Fase 5' },
-    { id: 'content-calendar', label: 'Content Calendar', icon: '📅', phase: 'Fase 4' },
+    { id: 'content-calendar', label: 'Content Calendar', icon: '📅', phase: 'Fase 4 • Aktif' },
     { id: 'analytics', label: 'Analytics', icon: '📈', phase: 'Fase 6' },
     { id: 'settings', label: 'Settings', icon: '⚙️', phase: 'Fase 2–3 • Aktif' }
   ];
@@ -21,6 +21,8 @@
     'employees',
     'trend-research',
     'idea-bank',
+    'script-management',
+    'content-calendar',
     'settings'
   ]);
 
@@ -63,6 +65,12 @@
       }
       if (pageId === 'idea-bank' && Nexora.ideaBankView) {
         Nexora.ideaBankView.render();
+      }
+      if (pageId === 'script-management' && Nexora.scriptManagementView) {
+        Nexora.scriptManagementView.render();
+      }
+      if (pageId === 'content-calendar' && Nexora.contentCalendarView) {
+        Nexora.contentCalendarView.render();
       }
     } else {
       const meta = MENU_ITEMS.find((m) => m.id === pageId) || { label: pageId, phase: 'Fase Berikutnya' };

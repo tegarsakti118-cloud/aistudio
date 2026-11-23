@@ -19,14 +19,28 @@
     });
   }
 
+  function todayDateStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
   function toBulletLines(arr, prefix = '• ') {
     if (!Array.isArray(arr) || arr.length === 0) return '• (Tidak ada data)';
     return arr.map((item) => `${prefix}${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n');
   }
 
-  function toNumberedLines(arr) {
-    if (!Array.isArray(arr) || arr.length === 0) return '1. (Tidak ada data)';
-    return arr.map((item, i) => `${i + 1}. ${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n');
+  function formatScenesText(scenes) {
+    if (!Array.isArray(scenes) || scenes.length === 0) return '1. (Belum ada adegan)';
+    return scenes
+      .map((sc, idx) => {
+        if (typeof sc === 'string') return `${idx + 1}. ${sc}`;
+        const no = sc.scene_no || idx + 1;
+        const dur = sc.duration_sec ? ` (${sc.duration_sec}d)` : '';
+        const spk = sc.speaker ? `[${sc.speaker}] ` : '';
+        const dlg = sc.dialogue || sc.narration || sc.text || '';
+        const vis = sc.visual_direction ? `\n   🎥 Visual: ${sc.visual_direction}` : '';
+        return `${no}.${dur} ${spk}${dlg}${vis}`;
+      })
+      .join('\n');
   }
 
   class WorkflowEngine {
@@ -36,6 +50,7 @@
       this.activeProjectId = null;
       this.tasksByProject = {};
       this.artifactsByProject = {};
+      this.schedulesByProject = {};
       this.latestFeedback = null;
       this.isStepRunning = false;
       this.hookedState = false;
@@ -70,6 +85,7 @@
           projects: this.projects.slice(0, 20),
           tasksByProject: this.tasksByProject,
           artifactsByProject: this.artifactsByProject,
+          schedulesByProject: this.schedulesByProject,
           latestFeedback: this.latestFeedback
         };
         localStorage.setItem(WORKFLOW_STORAGE_KEY, JSON.stringify(payload));
@@ -91,6 +107,9 @@
         }
         if (data.artifactsByProject && typeof data.artifactsByProject === 'object') {
           this.artifactsByProject = data.artifactsByProject;
+        }
+        if (data.schedulesByProject && typeof data.schedulesByProject === 'object') {
+          this.schedulesByProject = data.schedulesByProject;
         }
         if (data.latestFeedback) this.latestFeedback = data.latestFeedback;
       } catch (err) {
@@ -122,6 +141,42 @@
         });
       });
       return items.sort((a, b) => new Date(b.artifact.created_at) - new Date(a.artifact.created_at));
+    }
+
+    getProjectSchedule(projectId) {
+      const proj = this.projects.find((p) => p.id === projectId);
+      const saved = this.schedulesByProject[projectId] || {};
+      const defaultStatus = proj && proj.published_at
+        ? 'Posted'
+        : proj && proj.current_step >= 9
+          ? 'Ready'
+          : 'Planned';
+
+      return {
+        date: saved.date || (proj && proj.published_at ? proj.published_at.slice(0, 10) : todayDateStr()),
+        time: saved.time || '19:00',
+        platform: saved.platform || (proj ? proj.target_platform : 'TikTok / Reels / Shorts'),
+        status: saved.status || defaultStatus
+      };
+    }
+
+    setProjectSchedule(projectId, schedulePatch) {
+      const current = this.getProjectSchedule(projectId);
+      this.schedulesByProject[projectId] = { ...current, ...schedulePatch };
+      const proj = this.projects.find((p) => p.id === projectId);
+      if (proj) {
+        Nexora.state.addLog('MEL', `Memperbarui jadwal "${proj.title}" -> ${this.schedulesByProject[projectId].date} ${this.schedulesByProject[projectId].time} WIB.`);
+      }
+      this.emit();
+    }
+
+    getCalendarEntries() {
+      return this.projects
+        .map((proj) => ({
+          project: proj,
+          schedule: this.getProjectSchedule(proj.id)
+        }))
+        .sort((a, b) => `${a.schedule.date} ${a.schedule.time}`.localeCompare(`${b.schedule.date} ${b.schedule.time}`));
     }
 
     setActiveProject(projectId) {
@@ -323,6 +378,78 @@
       Nexora.state.addLog('DIREKTUR', `Memilih ide: "${chosenIdea.title || project.title}" -> diserahkan ke BIMA.`);
       await this.updateProjectState(project, patch);
       this.emit();
+      await this.runCurrentStep();
+    }
+
+    async saveEditedScript(projectId, updatedContent) {
+      const project = this.projects.find((p) => p.id === projectId);
+      if (!project) return;
+
+      const list = this.getProjectArtifacts(projectId);
+      const bimaArt = list.find((a) => a.employee_id === 'bima');
+      const nextVersion = bimaArt ? Number(bimaArt.version || 1) + 1 : 1;
+
+      const newArtifact = {
+        id: uid(),
+        project_id: project.id,
+        task_id: bimaArt ? bimaArt.task_id : null,
+        employee_id: 'bima',
+        artifact_type: 'script_draft',
+        version: nextVersion,
+        content: { ...updatedContent, version: nextVersion, edited_by_director: true },
+        source_mode: bimaArt ? bimaArt.source_mode : 'manual_edit',
+        approved_by_director: false,
+        created_at: new Date().toISOString()
+      };
+
+      if (this.isCloudMode() && newArtifact.task_id) {
+        await Nexora.supabaseService.saveArtifact({
+          project_id: project.id,
+          task_id: newArtifact.task_id,
+          employee_id: 'bima',
+          artifact_type: 'script_draft',
+          version: nextVersion,
+          content: newArtifact.content,
+          approved_by_director: false
+        });
+      }
+
+      this.artifactsByProject[project.id] = [newArtifact, ...list];
+      const bimaEmp = Nexora.state.getEmployee('bima');
+      if (bimaEmp) {
+        this.syncEmployeeToCanvas(
+          bimaEmp,
+          S.COMPLETED,
+          100,
+          `[${project.title}] Naskah Diedit Direktur (v${nextVersion})`,
+          this.formatPayloadText({ actor: 'bima', type: 'agent_task' }, newArtifact.content)
+        );
+      }
+
+      Nexora.state.addLog('DIREKTUR', `Menyimpan revisi manual naskah "${project.title}" (v${nextVersion}).`);
+      Nexora.state.pushNotification(`Naskah versi ${nextVersion} disimpan!`, 'success', 'bima');
+      this.emit();
+    }
+
+    async requestBimaRevision(projectId, revisionNotes) {
+      if (this.isStepRunning) return;
+      const project = this.projects.find((p) => p.id === projectId);
+      if (!project) return;
+
+      this.activeProjectId = project.id;
+      await this.updateProjectState(project, { current_step: 4, status: 'active' });
+      await this.runCurrentStep({
+        revisionNotes: String(revisionNotes || '').trim() || 'Pertajam hook awal dan rapikan dialog antar tokoh.'
+      });
+    }
+
+    async requestDimasReAudit(projectId) {
+      if (this.isStepRunning) return;
+      const project = this.projects.find((p) => p.id === projectId);
+      if (!project) return;
+
+      this.activeProjectId = project.id;
+      await this.updateProjectState(project, { current_step: 5, status: 'active' });
       await this.runCurrentStep();
     }
 
@@ -554,7 +681,10 @@
         );
         const projStatus = nextStepCfg.type === 'manual_publish' ? 'ready_to_publish' : 'waiting_director';
         const patch = { current_step: nextStepCfg.step, status: projStatus };
-        if (empId === 'mel') patch.publish_package = outputPayload;
+        if (empId === 'mel') {
+          patch.publish_package = outputPayload;
+          this.setProjectSchedule(project.id, { status: 'Ready' });
+        }
         await this.updateProjectState(project, patch);
       } else {
         Nexora.state.incrementMetricsFor(emp.id);
@@ -651,6 +781,7 @@
         patch.final_script = bimaArtifact ? bimaArtifact.content : (latestArtifact ? latestArtifact.content : null);
       } else if (stepCfg.step === 10) {
         patch.published_at = new Date().toISOString();
+        this.setProjectSchedule(project.id, { status: 'Posted', date: todayDateStr() });
         Nexora.state.addLog('DIREKTUR', `Mempublikasikan konten "${project.title}" secara manual (${revisionOrPublishNotes || 'Prime-time slot'}).`);
       }
 
@@ -804,15 +935,37 @@
         return {
           version: attemptCount,
           hook: attemptCount > 1
-            ? `[Hook Revisi v${attemptCount}] "Stop buang 3 jam ngedit manual—lihat cara tim AI ini kerja dari HP!"`
-            : `[Hook v1] "Banyak yang kira bikin ${ideaTitle} butuh tim besar dan laptop mahal..."`,
-          scenes: [
-            '0-3s: Visual masalah utama + teks besar di layar',
-            '4-20s: Tunjukkan alur riset, penulisan, hingga produksi terstruktur',
-            '21-40s: Bukti hasil akhir yang siap diposting'
+            ? `[Hook Revisi v${attemptCount}] "Stop buang 3 jam ngedit manual—Dito baru buktiin cara ini cuma dari HP!"`
+            : `"Kenapa ${ideaTitle} sering gagal di percobaan pertama? Ini yang kejadian sama Dito..."`,
+          characters: [
+            { name: 'Dito', voice_style: 'Anak muda santai & ekspresif' },
+            { name: 'Pak Hendra', voice_style: 'Mentor tenang & berpengalaman' }
           ],
-          cta: 'Simpan konten ini dan tulis "MAU" di komentar untuk part berikutnya!',
-          caption_draft: `${ideaTitle} — ringkas, terarah, dan siap praktik di ${project.target_platform}.`,
+          scenes: [
+            {
+              scene_no: 1,
+              duration_sec: 4,
+              speaker: 'Dito',
+              dialogue: 'Gue udah bikin belasan konten tiap minggu, tapi yang nonton tetep segitu-segitu aja.',
+              visual_direction: 'Close-up Dito menatap layar HP di meja kerja sambil menghela napas.'
+            },
+            {
+              scene_no: 2,
+              duration_sec: 12,
+              speaker: 'Pak Hendra',
+              dialogue: 'Masalahnya bukan rajinnya, Dit. Tapi 3 detik pertama lu nggak bikin orang berhenti scroll.',
+              visual_direction: 'Pak Hendra menunjuk grafik retensi penonton yang langsung anjlok di detik ke-2.'
+            },
+            {
+              scene_no: 3,
+              duration_sec: 14,
+              speaker: 'Dito',
+              dialogue: 'Begitu gue ubah pembukanya pakai konflik nyata dan alur yang terstruktur, penonton langsung betah sampai habis.',
+              visual_direction: 'Transisi cepat ke layar HP menampilkan grafik naik & kolom komentar ramai.'
+            }
+          ],
+          cta: 'Mau lihat lanjutannya di Bagian 2? Simpan video ini dan tulis pendapat lu di komentar!',
+          caption_draft: `${ideaTitle} — ringkas, relevan, dan langsung bisa dipraktikkan di ${project.target_platform}.`,
           applied_revision: input.revisionNotes || null
         };
       }
@@ -822,10 +975,11 @@
         return {
           verdict: needsFix ? 'NEEDS_REVISION' : 'PASS',
           hook_score: needsFix ? 7.2 : 9.1,
+          pacing_score: needsFix ? 7.5 : 8.9,
           factual_issues: [],
           revision_notes: needsFix
-            ? 'Hook awal masih terlalu umum, pertajam angka/manfaat di 3 detik pertama.'
-            : 'Hook kuat, struktur logis, klaim aman, layak disetujui Direktur.'
+            ? 'Hook awal masih terlalu umum, pertajam konflik tokoh di 3 detik pertama.'
+            : 'Hook kuat, dialog antar tokoh orisinal mengalir natural, siap disetujui Direktur.'
         };
       }
 
@@ -833,11 +987,11 @@
         return {
           version: attemptCount,
           storyboard_scenes: [
-            'Scene 1 (0-3s): Close-up UI Kantor Virtual + animasi status Working',
-            'Scene 2 (4-18s): Screen recording alur kerja agen + highlight subtitle kuning/putih',
-            'Scene 3 (19-40s): Hasil akhir & layar ajakan CTA'
+            'Scene 1 (0-4s): Close-up tokoh utama dengan subtitle bold putih & tag nama pembicara',
+            'Scene 2 (5-16s): Medium shot dialog interaktif + ilustrasi grafik/dokumen rapi',
+            'Scene 3 (17-30s): Shot penutup dengan cliffhanger & ajakan CTA'
           ],
-          asset_prompts: ['UI recording 1080x1920 vertical', 'Background ambient tech beat -18dB'],
+          asset_prompts: ['Karakter 3D stylized orisinal konsisten', 'Voiceover multi-suara + ambient music -18dB'],
           video_job_ref: `sim-render-${project.id.slice(0, 6)}-v${attemptCount}`
         };
       }
@@ -854,7 +1008,7 @@
       if (actor === 'mel') {
         return {
           final_caption: `🚀 ${project.title}\n\nDari riset sampai siap tayang, semua tersusun rapi dalam satu alur kerja studio.\n\nSimpan agar tidak lupa!`,
-          hashtags: ['#NexoraAIStudio', '#KontenKreator', '#ProduktivitasDigital', '#AIWorkflow'],
+          hashtags: ['#NexoraAIStudio', '#KontenKreator', '#ProduktivitasDigital', '#Storytelling'],
           recommended_slot: 'Hari ini, 19:00 WIB (Prime Time)',
           metadata: { platform: project.target_platform, category: project.niche }
         };
@@ -865,10 +1019,10 @@
           views: 18400,
           retention_eval: '79% penonton bertahan melewati 3 detik pertama',
           engagement_rate: '6.8%',
-          winning_patterns: ['Hook berbasis demonstrasi langsung di layar HP', 'Durasi padat <45 detik'],
+          winning_patterns: ['Hook dialog konflik langsung di 3 detik pertama', 'Durasi padat & subtitle jelas'],
           next_cycle_recommendations: [
-            `Buat seri lanjutan dari "${project.title}" dengan studi kasus angka nyata`,
-            'Uji variasi hook pertanyaan di 2 detik awal untuk RAKA & SARI'
+            `Buat seri Bagian 2 lanjutan dari "${project.title}"`,
+            'Pertahankan gaya storytelling dua tokoh dengan sudut pandang baru'
           ]
         };
       }
@@ -903,11 +1057,15 @@
       }
 
       if (actor === 'bima') {
+        const chars = Array.isArray(p.characters) && p.characters.length
+          ? p.characters.map((c) => (typeof c === 'string' ? c : `${c.name} (${c.voice_style || 'natural'})`)).join(', ')
+          : '-';
         return (
-          `📝 Draf Naskah (Versi ${p.version || 1})\n\n` +
+          `📝 Draf Naskah (Versi ${p.version || 1})\n` +
+          `👥 Tokoh Cerita: ${chars}\n\n` +
           `🎣 Hook Pembuka:\n${p.hook || '-'}\n\n` +
-          `🎬 Alur Adegan:\n${toNumberedLines(p.scenes)}\n\n` +
-          `📣 Ajakan (CTA):\n${p.cta || '-'}\n\n` +
+          `🎬 Alur Adegan & Dialog:\n${formatScenesText(p.scenes)}\n\n` +
+          `📣 Ajakan / Cliffhanger (CTA):\n${p.cta || '-'}\n\n` +
           `💬 Draf Caption:\n${p.caption_draft || '-'}`
         );
       }
@@ -917,18 +1075,18 @@
         return (
           `🔍 Hasil Audit Naskah (DIMAS)\n\n` +
           `• Status Review: ${statusText}\n` +
-          `• Skor Kekuatan Hook: ${p.hook_score ?? '-'}/10\n` +
+          `• Skor Hook: ${p.hook_score ?? '-'}/10 | Skor Pacing: ${p.pacing_score ?? '-'}/10\n` +
           `• Catatan Audit: ${p.revision_notes || '-'}\n` +
           (Array.isArray(p.factual_issues) && p.factual_issues.length
             ? `• Catatan Fakta:\n${toBulletLines(p.factual_issues)}`
-            : '• Akurasi Fakta: Aman, tidak ada temuan bermasalah.')
+            : '• Akurasi & Nama Tokoh: Aman & orisinal.')
         );
       }
 
       if (actor === 'laras') {
         return (
           `🎬 Storyboard & Arahan Produksi (Versi ${p.version || 1})\n\n` +
-          `🎞️ Adegan:\n${toNumberedLines(p.storyboard_scenes)}\n\n` +
+          `🎞️ Adegan:\n${formatScenesText(p.storyboard_scenes)}\n\n` +
           `🎨 Kebutuhan Aset:\n${toBulletLines(p.asset_prompts)}\n\n` +
           `🔖 Kode Produksi: ${p.video_job_ref || '-'}`
         );

@@ -45,16 +45,14 @@
         </button>
 
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-sm shadow-sky-500/30 text-sm">
-            N
-          </div>
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-sm shadow-sky-500/30 text-sm">N</div>
           <div class="leading-tight">
             <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">
               Nexora <span class="text-sky-600">AI Studio</span>
             </h1>
             <div class="flex items-center gap-1.5 text-[10px] font-medium text-slate-500">
               <span class="inline-block w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
-              <span id="header-studio-mode">Fase 3 • Mode Lokal</span>
+              <span id="header-studio-mode">Fase 4 • Mode Lokal</span>
             </div>
           </div>
         </div>
@@ -75,15 +73,13 @@
               d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
           </svg>
           <span id="notif-badge"
-            class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow">
-            0
-          </span>
+            class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <!-- SLIDE-OUT NAVIGATION DRAWER (11 Halaman Aplikasi) -->
+  <!-- SLIDE-OUT NAVIGATION DRAWER -->
   <div id="nav-drawer-backdrop" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden transition-opacity"></div>
   <aside id="nav-drawer" aria-hidden="true" inert
     class="fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
@@ -103,8 +99,8 @@
 
     <div class="p-3 border-t border-slate-100 bg-slate-50 space-y-2 text-[11px] text-slate-500">
       <div>
-        <div class="font-semibold text-slate-700">Status Build: Fase 3</div>
-        <div>Kantor 2D, Workflow 12 Langkah, Live AI Edge Function, Trend & Idea Bank.</div>
+        <div class="font-semibold text-slate-700">Status Build: Fase 4</div>
+        <div>Kantor 2D, Live AI, Trend, Idea Bank, Script Management & Calendar.</div>
       </div>
       <button id="btn-reset-simulation"
         class="w-full py-2 px-3 rounded-xl bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 text-slate-700 font-bold text-xs transition active:scale-95">
@@ -113,7 +109,7 @@
     </div>
   </aside>
 
-  <!-- NOTIFICATION CENTER POPOVER -->
+  <!-- NOTIFICATION CENTER -->
   <div id="notif-panel"
     class="hidden fixed top-16 right-3 z-40 w-[calc(100vw-24px)] max-w-sm bg-white rounded-2xl shadow-2xl border border-sky-100 overflow-hidden">
     <div class="px-4 py-3 bg-sky-50/80 border-b border-sky-100 flex items-center justify-between">
@@ -128,16 +124,13 @@
   <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-md space-y-2 pointer-events-none"></div>
 
-  <!-- MAIN APPLICATION CONTAINER -->
   <main class="max-w-7xl mx-auto px-2.5 sm:px-5 pt-3 pb-24">
 
     <!-- PAGE: VIRTUAL OFFICE -->
     <section id="page-virtual-office" class="app-page space-y-3">
       <div class="bg-white rounded-2xl p-3 shadow-sm border border-sky-100 flex flex-wrap items-center justify-between gap-2">
         <div class="flex items-center gap-2">
-          <span class="px-2.5 py-1 rounded-xl bg-sky-600 text-white text-xs font-bold shadow-sm">
-            Kantor Virtual 2D
-          </span>
+          <span class="px-2.5 py-1 rounded-xl bg-sky-600 text-white text-xs font-bold shadow-sm">Kantor Virtual 2D</span>
           <span class="text-xs text-slate-500 hidden sm:inline">Ketuk karakter atau meja untuk inspeksi & perintah kerja</span>
         </div>
 
@@ -201,9 +194,7 @@
           <div class="bg-white rounded-2xl p-3 shadow-sm border border-sky-100">
             <div class="flex items-center justify-between mb-2">
               <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Tim AI (8 Agen)</h3>
-              <button id="btn-go-dashboard-mini" class="text-xs font-semibold text-sky-600 hover:underline">
-                Buka Dashboard →
-              </button>
+              <button id="btn-go-dashboard-mini" class="text-xs font-semibold text-sky-600 hover:underline">Buka Dashboard →</button>
             </div>
             <div id="office-quick-roster" class="grid grid-cols-2 lg:grid-cols-1 gap-1.5"></div>
           </div>
@@ -222,47 +213,34 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <div class="flex items-center gap-2 mb-1">
-              <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-semibold">
-                Panel Kontrol Pemilik Studio
-              </span>
-              <span id="dashboard-mode-badge" class="inline-block px-2.5 py-0.5 rounded-full bg-slate-900/30 text-[11px] font-bold">
-                Mode Lokal
-              </span>
+              <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-semibold">Panel Kontrol Pemilik Studio</span>
+              <span id="dashboard-mode-badge" class="inline-block px-2.5 py-0.5 rounded-full bg-slate-900/30 text-[11px] font-bold">Mode Lokal</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-extrabold">Dashboard Direktur</h2>
-            <p class="text-xs sm:text-sm text-sky-100 mt-0.5">
-              Pantau produktivitas 8 karyawan AI dan kelola pipeline produksi 12 langkah.
-            </p>
+            <p class="text-xs sm:text-sm text-sky-100 mt-0.5">Pantau produktivitas 8 karyawan AI dan kelola pipeline produksi 12 langkah.</p>
           </div>
           <div class="flex flex-wrap gap-2">
             <button id="btn-dir-start-all"
-              class="px-3.5 py-2 rounded-xl bg-white text-sky-700 font-bold text-xs shadow hover:bg-sky-50 active:scale-95 transition">
-              ▶ Mulai Semua Tugas
-            </button>
+              class="px-3.5 py-2 rounded-xl bg-white text-sky-700 font-bold text-xs shadow hover:bg-sky-50 active:scale-95 transition">▶ Mulai Semua Tugas</button>
             <button id="btn-dir-stop-all"
-              class="px-3.5 py-2 rounded-xl bg-slate-900/30 text-white border border-white/25 font-bold text-xs hover:bg-slate-900/45 active:scale-95 transition">
-              ■ Hentikan Semua
-            </button>
+              class="px-3.5 py-2 rounded-xl bg-slate-900/30 text-white border border-white/25 font-bold text-xs hover:bg-slate-900/45 active:scale-95 transition">■ Hentikan Semua</button>
           </div>
         </div>
       </div>
 
-      <!-- PIPELINE PRODUKSI KONTEN 12 LANGKAH -->
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 class="text-sm sm:text-base font-extrabold text-slate-900">Pipeline Produksi Konten (12 Langkah)</h3>
-            <p class="text-xs text-slate-500">Alur terhubung: RAKA → SARI → ACC → BIMA ↔ DIMAS → ACC → LARAS ↔ TIO → MEL → Posting Manual → DINA → Feedback</p>
+            <p class="text-xs text-slate-500">RAKA → SARI → ACC → BIMA ↔ DIMAS → ACC → LARAS ↔ TIO → MEL → Posting → DINA → Feedback</p>
           </div>
-          <select id="select-active-project"
-            class="hidden px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-xs font-bold text-sky-800 focus:outline-none">
-          </select>
+          <select id="select-active-project" class="hidden px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-xs font-bold text-sky-800 focus:outline-none"></select>
         </div>
 
         <div id="dina-feedback-banner" class="hidden rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900"></div>
 
         <form id="form-new-project" class="grid grid-cols-1 sm:grid-cols-12 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-          <input id="input-project-title" type="text" required placeholder="Judul / topik konten baru (ketik 'uji revisi' untuk demo loop DIMAS)..."
+          <input id="input-project-title" type="text" required placeholder="Judul / topik konten baru..."
             class="sm:col-span-5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
           <input id="input-project-niche" type="text" value="AI & Produktivitas" placeholder="Niche konten..."
             class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
@@ -273,9 +251,7 @@
             <option value="YouTube Shorts">YouTube Shorts</option>
           </select>
           <button type="submit"
-            class="sm:col-span-2 px-3 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">
-            🚀 Mulai Proyek
-          </button>
+            class="sm:col-span-2 px-3 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🚀 Mulai Proyek</button>
         </form>
 
         <div id="workflow-pipeline-view" class="space-y-3"></div>
@@ -291,10 +267,7 @@
               <h3 class="text-sm font-bold text-slate-900">Kontrol & Status Karyawan AI</h3>
               <p class="text-xs text-slate-500">Klik karyawan untuk melihat hasil, menyetujui, atau memberi instruksi.</p>
             </div>
-            <button id="btn-back-to-office"
-              class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 text-xs font-bold hover:bg-sky-100 transition">
-              Lihat di Kantor 2D
-            </button>
+            <button id="btn-back-to-office" class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 text-xs font-bold hover:bg-sky-100 transition">Lihat di Kantor 2D</button>
           </div>
           <div id="dashboard-employee-controls" class="space-y-2"></div>
         </div>
@@ -304,7 +277,6 @@
             <h3 class="text-sm font-bold text-slate-900 mb-2">Ringkasan Performa Konten</h3>
             <div id="dashboard-performance-card" class="space-y-2.5"></div>
           </div>
-
           <div class="bg-white rounded-2xl p-4 border border-sky-100 shadow-sm">
             <h3 class="text-sm font-bold text-slate-900 mb-2">Aktivitas Terbaru</h3>
             <div id="dashboard-activity-log" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
@@ -320,14 +292,12 @@
           <h2 class="text-lg font-extrabold text-slate-900">Direktori Karyawan AI</h2>
           <p class="text-xs text-slate-500">8 Agen Spesialis Produksi Konten Digital Nexora</p>
         </div>
-        <span class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200">
-          8 Posisi Aktif
-        </span>
+        <span class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 text-xs font-bold border border-teal-200">8 Posisi Aktif</span>
       </div>
       <div id="employees-directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
     </section>
 
-    <!-- PAGE: TREND RESEARCH (RAKA - FASE 3) -->
+    <!-- PAGE: TREND RESEARCH (RAKA) -->
     <section id="page-trend-research" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -335,15 +305,13 @@
             <h2 class="text-lg font-extrabold text-slate-900">🔍 Trend Research • RAKA</h2>
             <p class="text-xs text-slate-500">RAKA memindai tren topik, strategi kompetitor, dan peluang konten lalu meneruskannya ke SARI.</p>
           </div>
-          <span id="trend-mode-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">
-            Simulasi Lokal
-          </span>
+          <span id="trend-mode-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">Simulasi Lokal</span>
         </div>
 
         <div id="trend-dina-insight" class="hidden rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900"></div>
 
         <form id="form-trend-research" class="grid grid-cols-1 sm:grid-cols-12 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-          <input id="input-trend-niche" type="text" required value="AI & Produktivitas" placeholder="Niche utama (mis. AI Bisnis, Edukasi)..."
+          <input id="input-trend-niche" type="text" required value="AI & Produktivitas" placeholder="Niche utama..."
             class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
           <input id="input-trend-keywords" type="text" placeholder="Kata kunci fokus (opsional)..."
             class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
@@ -361,26 +329,103 @@
           </button>
         </form>
       </div>
-
       <div id="trend-research-results" class="space-y-3"></div>
     </section>
 
-    <!-- PAGE: IDEA BANK (SARI - FASE 3) -->
+    <!-- PAGE: IDEA BANK (SARI) -->
     <section id="page-idea-bank" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 class="text-lg font-extrabold text-slate-900">💡 Idea Bank • SARI</h2>
           <p class="text-xs text-slate-500">Pilih ide terbaik dari SARI untuk langsung ditulis menjadi naskah oleh BIMA.</p>
         </div>
-        <span id="idea-bank-summary" class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold">
-          0 batch ide
-        </span>
+        <span id="idea-bank-summary" class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold">0 batch ide</span>
       </div>
-
       <div id="idea-bank-list" class="space-y-3"></div>
     </section>
 
-    <!-- PAGE: SETTINGS (SUPABASE, AUTH DIREKTUR, LIVE AI & PROFIL AGEN) -->
+    <!-- PAGE: SCRIPT MANAGEMENT (BIMA & DIMAS - FASE 4) -->
+    <section id="page-script-management" class="app-page hidden space-y-4">
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-900">📝 Script Management • BIMA & DIMAS</h2>
+          <p class="text-xs text-slate-500">Edit naskah storytelling & dialog, audit ulang dengan DIMAS, atau setujui naskah final ke LARAS.</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="select-script-project" class="hidden px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-xs font-bold text-sky-800"></select>
+          <span id="script-status-pill" class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold">Belum ada naskah</span>
+        </div>
+      </div>
+
+      <div id="script-empty-state" class="bg-white rounded-3xl p-6 border border-sky-100 text-center space-y-2.5">
+        <p class="text-xs text-slate-500">Belum ada naskah BIMA. Pilih salah satu ide dari <strong>Idea Bank</strong> agar BIMA menulis naskahnya.</p>
+        <button id="btn-script-to-ideabank" type="button" class="px-4 py-2 rounded-xl bg-teal-500 text-white text-xs font-bold">💡 Buka Idea Bank</button>
+      </div>
+
+      <div id="script-workspace" class="hidden space-y-3">
+        <div id="script-dimas-audit-card"></div>
+
+        <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">🎣 Hook Pembuka (0–3 Detik)</label>
+            <textarea id="input-script-hook" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-600 mb-1">👥 Tokoh Cerita Orisinal (pisahkan dengan koma)</label>
+            <input id="input-script-characters" type="text" placeholder="Contoh: Dito (santui), Pak Hendra (mentor)"
+              class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="text-[11px] font-bold text-slate-600">🎬 Daftar Adegan, Dialog & Arahan Visual</label>
+              <button id="btn-add-script-scene" type="button" class="px-2.5 py-1 rounded-lg bg-sky-50 text-sky-700 border border-sky-200 text-[11px] font-bold">+ Tambah Adegan</button>
+            </div>
+            <div id="script-scenes-editor" class="space-y-2"></div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">📣 CTA / Cliffhanger</label>
+              <textarea id="input-script-cta" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">💬 Draf Caption</label>
+              <textarea id="input-script-caption" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
+            </div>
+          </div>
+
+          <div class="pt-2 border-t border-slate-100 space-y-2">
+            <input id="input-script-director-note" type="text" placeholder="Catatan revisi Direktur untuk BIMA (opsional)..."
+              class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+            <div class="flex flex-wrap gap-2">
+              <button id="btn-save-script-edit" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold active:scale-95 transition">💾 Simpan Edit</button>
+              <button id="btn-script-reaudit" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold active:scale-95 transition">🔍 Audit Ulang DIMAS</button>
+              <button id="btn-script-bima-revise" type="button" class="px-3.5 py-2 rounded-xl bg-amber-500 text-white text-xs font-bold active:scale-95 transition">✍️ Minta BIMA Revisi AI</button>
+              <button id="btn-script-approve-final" type="button" class="hidden px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold active:scale-95 transition">✓ Setujui Naskah Final → LARAS</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: CONTENT CALENDAR (MEL - FASE 4) -->
+    <section id="page-content-calendar" class="app-page hidden space-y-4">
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-extrabold text-slate-900">📅 Content Calendar • Jadwal Publikasi</h2>
+            <p class="text-xs text-slate-500">Atur tanggal, jam prime-time, salin caption MEL, dan konfirmasi publikasi manual.</p>
+          </div>
+          <span id="calendar-summary-pill" class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold">0 Siap Post</span>
+        </div>
+        <div id="calendar-filter-tabs" class="flex flex-wrap gap-1.5"></div>
+      </div>
+      <div id="calendar-list" class="space-y-3"></div>
+    </section>
+
+    <!-- PAGE: SETTINGS -->
     <section id="page-settings" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-2">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -394,13 +439,11 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <!-- KONEKSI SUPABASE -->
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
           <div>
             <h3 class="text-sm font-extrabold text-slate-900">1. Koneksi Supabase Project</h3>
-            <p class="text-xs text-slate-500">Masukkan Project URL dan Anon Public Key (pastikan <code>supabase/schema.sql</code> sudah dijalankan).</p>
+            <p class="text-xs text-slate-500">Masukkan Project URL dan Anon Public Key.</p>
           </div>
-
           <form id="form-supabase-config" class="space-y-2.5">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Supabase URL</label>
@@ -413,29 +456,18 @@
                 class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
-              <button id="btn-save-supabase" type="submit"
-                class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">
-                Simpan Koneksi
-              </button>
-              <button id="btn-test-supabase" type="button"
-                class="px-3.5 py-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold active:scale-95 transition">
-                Tes Koneksi
-              </button>
-              <button id="btn-clear-supabase" type="button"
-                class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold active:scale-95 transition">
-                Putuskan
-              </button>
+              <button id="btn-save-supabase" type="submit" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">Simpan Koneksi</button>
+              <button id="btn-test-supabase" type="button" class="px-3.5 py-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold active:scale-95 transition">Tes Koneksi</button>
+              <button id="btn-clear-supabase" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold active:scale-95 transition">Putuskan</button>
             </div>
           </form>
         </div>
 
-        <!-- AUTENTIKASI DIREKTUR -->
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
           <div>
             <h3 class="text-sm font-extrabold text-slate-900">2. Autentikasi Direktur (Supabase Auth)</h3>
-            <p class="text-xs text-slate-500">Hanya akun Direktur terautentikasi yang dapat mengakses database & memanggil Edge Function AI.</p>
+            <p class="text-xs text-slate-500">Hanya akun Direktur terautentikasi yang dapat mengakses database & Edge Function AI.</p>
           </div>
-
           <form id="form-director-auth" class="space-y-2.5">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Email Direktur</label>
@@ -448,76 +480,48 @@
                 class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
-              <button id="btn-auth-signin" type="button"
-                class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">
-                Login Direktur
-              </button>
-              <button id="btn-auth-signup" type="button"
-                class="px-4 py-2 rounded-xl bg-white border border-sky-200 text-sky-700 text-xs font-bold active:scale-95 transition">
-                Daftar Akun Baru
-              </button>
+              <button id="btn-auth-signin" type="button" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">Login Direktur</button>
+              <button id="btn-auth-signup" type="button" class="px-4 py-2 rounded-xl bg-white border border-sky-200 text-sky-700 text-xs font-bold active:scale-95 transition">Daftar Akun Baru</button>
             </div>
           </form>
-
           <div id="settings-auth-logged-in" class="hidden p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2.5">
-            <div class="text-xs text-emerald-800">
-              Terautentikasi sebagai: <strong id="auth-user-email"></strong>
-            </div>
-            <button id="btn-auth-signout" type="button"
-              class="px-3.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 text-xs font-bold active:scale-95 transition">
-              Logout Direktur
-            </button>
+            <div class="text-xs text-emerald-800">Terautentikasi sebagai: <strong id="auth-user-email"></strong></div>
+            <button id="btn-auth-signout" type="button" class="px-3.5 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 text-xs font-bold active:scale-95 transition">Logout Direktur</button>
           </div>
         </div>
       </div>
 
-      <!-- KONTROL AI API & LOG TOKEN/BIAYA (FASE 3) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
               <h3 class="text-sm font-extrabold text-slate-900">3. Mesin AI Agent (Edge Function)</h3>
-              <p class="text-xs text-slate-500">API Key AI disimpan aman di <em>Supabase Edge Function Secrets</em>, tidak pernah di browser.</p>
+              <p class="text-xs text-slate-500">API Key AI disimpan aman di <em>Supabase Edge Function Secrets</em>.</p>
             </div>
-            <span id="ai-mode-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">
-              Simulasi
-            </span>
+            <span id="ai-mode-status-pill" class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700">Simulasi</span>
           </div>
-
           <label class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 cursor-pointer">
             <div>
               <div class="text-xs font-bold text-slate-800">Gunakan Live AI saat Cloud Aktif</div>
-              <div class="text-[11px] text-slate-500">Memanggil <code>nexora-ai-agent</code> (otomatis fallback ke simulasi jika belum dideploy).</div>
+              <div class="text-[11px] text-slate-500">Memanggil <code>nexora-ai-agent</code> (fallback otomatis ke simulasi jika error).</div>
             </div>
             <input id="toggle-live-ai" type="checkbox" class="w-4 h-4 accent-teal-500" />
           </label>
-
-          <div class="p-3 rounded-2xl bg-sky-50 border border-sky-100 text-[11px] text-sky-900 space-y-1">
-            <div class="font-bold">Cara Deploy Edge Function dari GitHub / CLI:</div>
-            <div class="font-mono text-[10px] bg-white p-2 rounded-xl border border-sky-200 overflow-x-auto">
-              supabase functions deploy nexora-ai-agent<br />
-              supabase secrets set GEMINI_API_KEY=your_key_here
-            </div>
-          </div>
         </div>
 
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
           <div class="flex items-center justify-between gap-2">
             <div>
               <h3 class="text-sm font-extrabold text-slate-900">4. Tracking Token & Biaya AI</h3>
-              <p class="text-xs text-slate-500">Diambil dari tabel <code>ai_usage_logs</code> di Supabase.</p>
+              <p class="text-xs text-slate-500">Dari tabel <code>ai_usage_logs</code> di Supabase.</p>
             </div>
-            <button id="btn-refresh-ai-usage" type="button"
-              class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold active:scale-95">
-              ↻ Refresh
-            </button>
+            <button id="btn-refresh-ai-usage" type="button" class="px-3 py-1.5 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold active:scale-95">↻ Refresh</button>
           </div>
           <div id="ai-usage-summary" class="grid grid-cols-3 gap-2"></div>
           <div id="ai-usage-list" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
         </div>
       </div>
 
-      <!-- SPESIFIKASI PROMPT & KONTRAK 8 AGEN -->
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
         <div>
           <h3 class="text-sm font-extrabold text-slate-900">5. Spesifikasi Peran, System Prompt & Kontrak Data (8 Agen)</h3>
@@ -530,21 +534,12 @@
     <!-- PAGE: COMING IN NEXT PHASES -->
     <section id="page-phase-placeholder" class="app-page hidden">
       <div class="max-w-xl mx-auto mt-6 bg-white rounded-3xl p-6 border border-sky-100 shadow-md text-center space-y-3">
-        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-sky-500 to-teal-400 text-white flex items-center justify-center text-2xl shadow-md">
-          🚀
-        </div>
-        <span id="placeholder-phase-badge" class="inline-block px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold border border-sky-200">
-          Dijadwalkan pada Fase Berikutnya
-        </span>
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br from-sky-500 to-teal-400 text-white flex items-center justify-center text-2xl shadow-md">🚀</div>
+        <span id="placeholder-phase-badge" class="inline-block px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-bold border border-sky-200">Dijadwalkan pada Fase Berikutnya</span>
         <h2 id="placeholder-title" class="text-xl font-extrabold text-slate-900">Nama Halaman</h2>
-        <p id="placeholder-desc" class="text-sm text-slate-600 leading-relaxed">
-          Modul ini akan dibangun bertahap sesuai roadmap Nexora AI Studio.
-        </p>
+        <p id="placeholder-desc" class="text-sm text-slate-600 leading-relaxed">Modul ini akan dibangun bertahap sesuai roadmap Nexora AI Studio.</p>
         <div class="pt-2">
-          <button id="btn-placeholder-to-office"
-            class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow transition">
-            Kembali ke Kantor Virtual 2D
-          </button>
+          <button id="btn-placeholder-to-office" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow transition">Kembali ke Kantor Virtual 2D</button>
         </div>
       </div>
     </section>
@@ -555,40 +550,30 @@
   <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-sky-100 shadow-[0_-4px_20px_rgba(2,132,199,0.08)] sm:hidden">
     <div class="grid grid-cols-4 h-16">
       <button data-nav-page="virtual-office" class="bottom-nav-btn active flex flex-col items-center justify-center gap-0.5 text-sky-600">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-        </svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
         <span class="text-[10px] font-bold">Kantor 2D</span>
       </button>
       <button data-nav-page="dashboard" class="bottom-nav-btn flex flex-col items-center justify-center gap-0.5 text-slate-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z" />
-        </svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-3a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z" /></svg>
         <span class="text-[10px] font-semibold">Dashboard</span>
       </button>
       <button data-nav-page="employees" class="bottom-nav-btn flex flex-col items-center justify-center gap-0.5 text-slate-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
         <span class="text-[10px] font-semibold">Karyawan</span>
       </button>
       <button id="btn-mobile-more-menu" class="flex flex-col items-center justify-center gap-0.5 text-slate-500">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-        </svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
         <span class="text-[10px] font-semibold">11 Menu</span>
       </button>
     </div>
   </nav>
 
-  <!-- EMPLOYEE DETAIL MODAL / BOTTOM SHEET -->
+  <!-- EMPLOYEE DETAIL MODAL -->
   <div id="employee-modal-backdrop" class="fixed inset-0 z-50 bg-slate-900/55 backdrop-blur-sm hidden"></div>
   <div id="employee-modal" aria-hidden="true" inert
     class="fixed inset-x-0 bottom-0 sm:inset-y-4 sm:right-4 sm:left-auto z-50 w-full sm:w-[440px] max-h-[88vh] sm:max-h-[calc(100vh-32px)] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl transform translate-y-full sm:translate-y-0 sm:translate-x-[120%] transition-transform duration-300 flex flex-col overflow-hidden">
 
-    <div class="sm:hidden flex justify-center pt-2.5 pb-1">
-      <div class="w-10 h-1.5 rounded-full bg-slate-200"></div>
-    </div>
+    <div class="sm:hidden flex justify-center pt-2.5 pb-1"><div class="w-10 h-1.5 rounded-full bg-slate-200"></div></div>
 
     <div id="modal-header" class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-sky-50 to-teal-50">
       <div class="flex items-center gap-3">
@@ -602,9 +587,7 @@
         </div>
       </div>
       <button id="btn-close-employee-modal" class="p-2 rounded-xl bg-white hover:bg-slate-100 text-slate-500 border border-slate-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
 
@@ -623,31 +606,16 @@
       <div class="space-y-2">
         <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kontrol Direktur</span>
         <div class="grid grid-cols-2 gap-2">
-          <button id="btn-emp-start"
-            class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">
-            ▶ Mulai Tugas
-          </button>
-          <button id="btn-emp-stop"
-            class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition">
-            ■ Hentikan (Standby)
-          </button>
-          <button id="btn-emp-approve"
-            class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold active:scale-95 transition">
-            ✓ Setujui Hasil
-          </button>
-          <button id="btn-emp-reject"
-            class="px-3 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold active:scale-95 transition">
-            ✕ Tolak / Revisi
-          </button>
+          <button id="btn-emp-start" class="px-3 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">▶ Mulai Tugas</button>
+          <button id="btn-emp-stop" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold active:scale-95 transition">■ Hentikan (Standby)</button>
+          <button id="btn-emp-approve" class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold active:scale-95 transition">✓ Setujui Hasil</button>
+          <button id="btn-emp-reject" class="px-3 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold active:scale-95 transition">✕ Tolak / Revisi</button>
         </div>
 
         <form id="form-emp-instruction" class="flex gap-1.5 pt-1">
           <input id="input-emp-instruction" type="text" placeholder="Kirim instruksi ke karyawan ini..."
             class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <button type="submit"
-            class="px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold active:scale-95 transition">
-            Kirim
-          </button>
+          <button type="submit" class="px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold active:scale-95 transition">Kirim</button>
         </form>
       </div>
 
@@ -677,7 +645,7 @@
     </div>
   </div>
 
-  <!-- SUPABASE JS SDK (CDN, Zero-Build) -->
+  <!-- SUPABASE JS SDK -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- NEXORA MODULES -->
@@ -693,6 +661,8 @@
   <script defer src="js/ui/employeeModal.js"></script>
   <script defer src="js/ui/trendResearchView.js"></script>
   <script defer src="js/ui/ideaBankView.js"></script>
+  <script defer src="js/ui/scriptManagementView.js"></script>
+  <script defer src="js/ui/contentCalendarView.js"></script>
   <script defer src="js/ui/settingsView.js"></script>
   <script defer src="js/ui/dashboardView.js"></script>
   <script defer src="js/ui/navigation.js"></script>

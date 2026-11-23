@@ -31,7 +31,7 @@
       step: 4,
       actor: 'bima',
       type: 'agent_task',
-      label: 'Penulisan Naskah, Hook & CTA',
+      label: 'Penulisan Naskah, Hook & Adegan',
       artifactType: 'script_draft',
       nextStep: 5
     },
@@ -115,7 +115,7 @@
       systemPrompt:
         'Anda adalah RAKA, Trend Researcher di Nexora AI Studio. Analisis tren niche, pola konten kompetitor, dan peluang topik bernilai tinggi dalam JSON terstruktur.',
       inputContract: 'niche_config + optional_dina_feedback',
-      outputContract: 'trend_report_json { trends[], competitors[], opportunities[] }'
+      outputContract: 'trend_report_json { niche, trends[], competitors[], opportunities[] }'
     },
     sari: {
       agentType: 'ideator',
@@ -135,9 +135,9 @@
       handoffTo: ['dimas'],
       metricType: 'scripts',
       systemPrompt:
-        'Anda adalah BIMA, Scriptwriter di Nexora AI Studio. Tulis naskah berstruktur Hook (0-3 detik), Storytelling, CTA, dan draf caption berdasarkan ide terpilih atau revisi DIMAS.',
+        'Anda adalah BIMA, Scriptwriter spesialis video vertikal 9:16 storytelling/dialog di Nexora AI Studio. Tulis naskah berstruktur Hook (0-3 detik), daftar adegan berdialog/narasi singkat, CTA/cliffhanger, dan caption. WAJIB ciptakan nama tokoh cerita yang 100% baru dan orisinal (dilarang memakai nama dari video referensi atau nama karyawan studio: Raka, Sari, Bima, Dimas, Laras, Tio, Mel, Dina).',
       inputContract: 'approved_idea_json + optional_dimas_revision_notes',
-      outputContract: 'script_draft_json { hook, scenes[], cta, caption_draft }'
+      outputContract: 'script_draft_json { version, hook, characters[], scenes[{ scene_no, duration_sec, speaker, dialogue, visual_direction }], cta, caption_draft }'
     },
     dimas: {
       agentType: 'reviewer',
@@ -147,9 +147,9 @@
       revisionTarget: 'bima',
       metricType: 'script_qc',
       systemPrompt:
-        'Anda adalah DIMAS, Script Reviewer di Nexora AI Studio. Audit draf naskah BIMA (hook, alur cerita, akurasi fakta) dan berikan verdict serta catatan revisi.',
+        'Anda adalah DIMAS, Script Reviewer di Nexora AI Studio. Audit draf naskah BIMA dari aspek kekuatan hook 3 detik pertama, kelancaran dialog/pacing adegan, keorisinalan nama tokoh, dan akurasi klaim.',
       inputContract: 'script_draft_json',
-      outputContract: 'script_review_json { verdict, hook_score, factual_issues[], revision_notes }'
+      outputContract: 'script_review_json { verdict, hook_score, pacing_score, factual_issues[], revision_notes }'
     },
     laras: {
       agentType: 'producer',
@@ -158,7 +158,7 @@
       handoffTo: ['tio'],
       metricType: 'videos',
       systemPrompt:
-        'Anda adalah LARAS, Video Producer di Nexora AI Studio. Susun storyboard adegan per adegan, arahan visual, kebutuhan aset, dan panduan subtitle.',
+        'Anda adalah LARAS, Video Producer di Nexora AI Studio. Susun storyboard adegan per adegan, arahan visual bergaya konsisten, kebutuhan aset suara/gambar, dan panduan subtitle.',
       inputContract: 'approved_script_json + optional_tio_qc_notes',
       outputContract: 'production_pack_json { storyboard_scenes[], asset_prompts[], video_job_ref }'
     },
@@ -170,7 +170,7 @@
       revisionTarget: 'laras',
       metricType: 'videos',
       systemPrompt:
-        'Anda adalah TIO, Video Reviewer di Nexora AI Studio. Lakukan Quality Control hasil produksi LARAS terhadap kesesuaian naskah, audio, dan subtitle.',
+        'Anda adalah TIO, Video Reviewer di Nexora AI Studio. Lakukan Quality Control hasil produksi LARAS terhadap kesesuaian naskah, audio, dan keterbacaan subtitle.',
       inputContract: 'production_pack_json + approved_script_json',
       outputContract: 'video_qc_json { verdict, audio_check, subtitle_check, revision_notes }'
     },

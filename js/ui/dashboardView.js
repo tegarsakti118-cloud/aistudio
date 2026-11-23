@@ -146,10 +146,10 @@
 
     if (headerMode) {
       headerMode.textContent = isLiveAI
-        ? 'Fase 3 • Live AI + Cloud'
+        ? 'Fase 4 • Live AI + Cloud'
         : isCloud
-          ? 'Fase 3 • Cloud Supabase'
-          : 'Fase 3 • Mode Lokal';
+          ? 'Fase 4 • Cloud Supabase'
+          : 'Fase 4 • Mode Lokal';
     }
     if (dashBadge) {
       dashBadge.textContent = isLiveAI
@@ -253,6 +253,12 @@
       const ideaBankBtn = stepCfg.step === 3
         ? `<button id="btn-wf-goto-ideabank" type="button" class="px-3 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold active:scale-95">💡 Pilih di Idea Bank</button>`
         : '';
+      const scriptBtn = stepCfg.step === 6
+        ? `<button id="btn-wf-goto-scripts" type="button" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold active:scale-95">📝 Edit Naskah</button>`
+        : '';
+      const calendarBtn = isManualPublish
+        ? `<button id="btn-wf-goto-calendar" type="button" class="px-3 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold active:scale-95">📅 Content Calendar</button>`
+        : '';
 
       actionPanelHtml = `
         <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2.5">
@@ -276,6 +282,8 @@
               ✕ Tolak ke Langkah ${esc(stepCfg.rejectStep)}
             </button>
             ${ideaBankBtn}
+            ${scriptBtn}
+            ${calendarBtn}
             ${copyBtn}
           </div>
         </div>
@@ -317,6 +325,12 @@
 
     const btnIdeaBank = document.getElementById('btn-wf-goto-ideabank');
     if (btnIdeaBank) btnIdeaBank.addEventListener('click', () => Nexora.navigation.navigateTo('idea-bank'));
+
+    const btnScripts = document.getElementById('btn-wf-goto-scripts');
+    if (btnScripts) btnScripts.addEventListener('click', () => Nexora.navigation.navigateTo('script-management'));
+
+    const btnCalendar = document.getElementById('btn-wf-goto-calendar');
+    if (btnCalendar) btnCalendar.addEventListener('click', () => Nexora.navigation.navigateTo('content-calendar'));
 
     const btnReject = document.getElementById('btn-wf-reject');
     if (btnReject) {

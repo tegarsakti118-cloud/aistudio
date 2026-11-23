@@ -19,6 +19,16 @@
     });
   }
 
+  function toBulletLines(arr, prefix = '• ') {
+    if (!Array.isArray(arr) || arr.length === 0) return '• (Tidak ada data)';
+    return arr.map((item) => `${prefix}${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n');
+  }
+
+  function toNumberedLines(arr) {
+    if (!Array.isArray(arr) || arr.length === 0) return '1. (Tidak ada data)';
+    return arr.map((item, i) => `${i + 1}. ${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n');
+  }
+
   class WorkflowEngine {
     constructor() {
       this.listeners = [];
@@ -407,14 +417,14 @@
 
       await this.delay(450);
       taskRecord.progress = 55;
-      this.syncEmployeeToCanvas(emp, taskRecord.status, 55, taskTitle, `Menjalankan AI Agent (${emp.name}) untuk ${stepCfg.artifactType}...`);
+      this.syncEmployeeToCanvas(emp, taskRecord.status, 55, taskTitle, `Menjalankan AI Agent (${emp.name}) untuk ${stepCfg.label}...`);
       if (this.isCloudMode()) {
         await Nexora.supabaseService.updateTask(taskRecord.id, { progress: 55 });
       }
 
       let outputPayload = null;
       let usedLiveAI = false;
-      let aiMetaText = 'Simulasi Lokal';
+      let aiMetaText = 'Mode Simulasi';
 
       if (Nexora.aiService && Nexora.aiService.isLiveAIAvailable()) {
         try {
@@ -430,7 +440,7 @@
           outputPayload = aiResult.output;
           usedLiveAI = true;
           const totalTok = (aiResult.usage?.prompt_tokens || 0) + (aiResult.usage?.completion_tokens || 0);
-          aiMetaText = `Live AI • ${aiResult.provider}/${aiResult.model} (${totalTok} token)`;
+          aiMetaText = `Live AI (${aiResult.model} • ${totalTok} token)`;
           Nexora.state.addLog(emp.name, `Output AI diterima (${aiMetaText}).`);
           Nexora.aiService.fetchUsageLogs(20).catch(() => {});
         } catch (aiErr) {
@@ -444,7 +454,7 @@
         outputPayload = this.generateStepOutput(project, stepCfg, inputPayload, attemptCount);
       }
 
-      const formattedText = `[${aiMetaText}]\n` + this.formatPayloadText(stepCfg, outputPayload);
+      const formattedText = `✨ Sumber: ${aiMetaText}\n\n` + this.formatPayloadText(stepCfg, outputPayload);
 
       const artifact = {
         id: uid(),
@@ -867,7 +877,106 @@
     }
 
     formatPayloadText(stepCfg, payload) {
-      return `[Pipeline Langkah ${stepCfg.step} • ${stepCfg.label}]\n` + JSON.stringify(payload, null, 2);
+      const p = payload || {};
+      const actor = stepCfg ? stepCfg.actor : '';
+
+      if (actor === 'raka') {
+        return (
+          `📌 Riset Tren (${p.niche || '-'})\n\n` +
+          `🔥 Tren Naik:\n${toBulletLines(p.trends)}\n\n` +
+          `🎯 Kompetitor:\n${toBulletLines(p.competitors)}\n\n` +
+          `💎 Peluang Konten:\n${toBulletLines(p.opportunities)}`
+        );
+      }
+
+      if (actor === 'sari') {
+        const ideas = Array.isArray(p.ideas) ? p.ideas : [];
+        const lines = ideas.map((idea, idx) =>
+          `${idx + 1}. ${idea.title || '-'} (Skor Potensi: ${idea.potential_score || '-'}/100)\n` +
+          `   • Sudut Pandang: ${idea.angle || '-'}\n` +
+          `   • Target Audiens: ${idea.audience || '-'}`
+        ).join('\n\n');
+        return (
+          `💡 Usulan Ide Konten SARI:\n\n${lines || 'Belum ada ide.'}\n\n` +
+          `👉 Tekan "✓ Setujui Hasil" di atas (atau buka menu Idea Bank untuk memilih ide spesifik).`
+        );
+      }
+
+      if (actor === 'bima') {
+        return (
+          `📝 Draf Naskah (Versi ${p.version || 1})\n\n` +
+          `🎣 Hook Pembuka:\n${p.hook || '-'}\n\n` +
+          `🎬 Alur Adegan:\n${toNumberedLines(p.scenes)}\n\n` +
+          `📣 Ajakan (CTA):\n${p.cta || '-'}\n\n` +
+          `💬 Draf Caption:\n${p.caption_draft || '-'}`
+        );
+      }
+
+      if (actor === 'dimas') {
+        const statusText = p.verdict === 'PASS' ? 'LAYAK (PASS)' : 'PERLU REVISI';
+        return (
+          `🔍 Hasil Audit Naskah (DIMAS)\n\n` +
+          `• Status Review: ${statusText}\n` +
+          `• Skor Kekuatan Hook: ${p.hook_score ?? '-'}/10\n` +
+          `• Catatan Audit: ${p.revision_notes || '-'}\n` +
+          (Array.isArray(p.factual_issues) && p.factual_issues.length
+            ? `• Catatan Fakta:\n${toBulletLines(p.factual_issues)}`
+            : '• Akurasi Fakta: Aman, tidak ada temuan bermasalah.')
+        );
+      }
+
+      if (actor === 'laras') {
+        return (
+          `🎬 Storyboard & Arahan Produksi (Versi ${p.version || 1})\n\n` +
+          `🎞️ Adegan:\n${toNumberedLines(p.storyboard_scenes)}\n\n` +
+          `🎨 Kebutuhan Aset:\n${toBulletLines(p.asset_prompts)}\n\n` +
+          `🔖 Kode Produksi: ${p.video_job_ref || '-'}`
+        );
+      }
+
+      if (actor === 'tio') {
+        const statusText = p.verdict === 'PASS' ? 'LAYAK TERBIT (PASS)' : 'PERLU PERBAIKAN';
+        return (
+          `✅ Laporan Quality Control Video (TIO)\n\n` +
+          `• Status QC: ${statusText}\n` +
+          `• Audio: ${p.audio_check || '-'}\n` +
+          `• Subtitle: ${p.subtitle_check || '-'}\n` +
+          `• Catatan: ${p.revision_notes || '-'}`
+        );
+      }
+
+      if (actor === 'mel') {
+        const tags = Array.isArray(p.hashtags) ? p.hashtags.join(' ') : '-';
+        return (
+          `📢 Paket Siap Publikasi (MEL)\n\n` +
+          `• Rekomendasi Jam Tayang: ${p.recommended_slot || '-'}\n\n` +
+          `✍️ Caption Final:\n${p.final_caption || '-'}\n\n` +
+          `#️⃣ Hashtag:\n${tags}\n\n` +
+          `👉 Silakan posting manual lalu tekan "✓ Setujui Hasil" untuk konfirmasi tayang.`
+        );
+      }
+
+      if (stepCfg && stepCfg.type === 'feedback_loop') {
+        return (
+          `🔁 Feedback Siklus DINA → RAKA & SARI\n\n` +
+          `• Sumber Proyek: ${p.fromTitle || '-'}\n` +
+          `• Rekomendasi Siklus Berikutnya:\n${toBulletLines(p.recommendations)}`
+        );
+      }
+
+      if (actor === 'dina') {
+        return (
+          `📊 Evaluasi Performa Konten (DINA)\n\n` +
+          `• Retensi Penonton: ${p.retention_eval || '-'}\n` +
+          `• Engagement Rate: ${p.engagement_rate || '-'}\n\n` +
+          `🏆 Pola Berhasil:\n${toBulletLines(p.winning_patterns)}\n\n` +
+          `🚀 Rekomendasi Berikutnya:\n${toBulletLines(p.next_cycle_recommendations)}`
+        );
+      }
+
+      return Object.entries(p)
+        .map(([k, v]) => `• ${k}: ${Array.isArray(v) ? v.join(', ') : typeof v === 'object' && v !== null ? JSON.stringify(v) : v}`)
+        .join('\n');
     }
 
     syncEmployeeToCanvas(emp, status, progress, currentTask, lastOutput) {

@@ -3,6 +3,24 @@
 
   const esc = (v) => (Nexora.utils && Nexora.utils.escapeHtml ? Nexora.utils.escapeHtml(v) : String(v ?? ''));
 
+  function formatArtifactReadableText(artifact) {
+    if (!artifact) return '';
+    const c = artifact.content || {};
+    const empId = String(artifact.employee_id || '').toLowerCase();
+
+    if (Nexora.workflowEngine && typeof Nexora.workflowEngine.formatPayloadText === 'function') {
+      const fakeCfg = { actor: empId, type: 'agent_task' };
+      const knownActors = new Set(['raka', 'sari', 'bima', 'dimas', 'laras', 'tio', 'mel', 'dina']);
+      if (knownActors.has(empId)) {
+        return Nexora.workflowEngine.formatPayloadText(fakeCfg, c);
+      }
+    }
+
+    return Object.entries(c)
+      .map(([k, v]) => `• ${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+      .join('\n');
+  }
+
   function renderAllViews() {
     const state = Nexora.state;
     const stats = state.getSummaryStats();
@@ -95,7 +113,7 @@
           <span class="text-xs font-semibold text-slate-700">Skor Kualitas Naskah (DIMAS)</span>
           <span class="text-sm font-extrabold text-teal-700">${esc(stats.scriptQualityScore)}</span>
         </div>
-        <p class="text-[11px] text-slate-400">Catatan: Terhubung dengan metrik studio lokal/Supabase. Integrasi AI API & analitik eksternal masuk pada Fase 3–6.</p>
+        <p class="text-[11px] text-slate-400">Catatan: Terhubung dengan metrik studio lokal/Supabase.</p>
       `;
     }
 
@@ -122,14 +140,23 @@
 
   function syncConnectionLabels() {
     const isCloud = Nexora.supabaseService && Nexora.supabaseService.isAuthenticated();
+    const isLiveAI = Nexora.aiService && Nexora.aiService.isLiveAIAvailable();
     const headerMode = document.getElementById('header-studio-mode');
     const dashBadge = document.getElementById('dashboard-mode-badge');
 
     if (headerMode) {
-      headerMode.textContent = isCloud ? 'Fase 2 • Cloud Supabase' : 'Fase 2 • Mode Lokal';
+      headerMode.textContent = isLiveAI
+        ? 'Fase 3 • Live AI + Cloud'
+        : isCloud
+          ? 'Fase 3 • Cloud Supabase'
+          : 'Fase 3 • Mode Lokal';
     }
     if (dashBadge) {
-      dashBadge.textContent = isCloud ? 'Cloud Supabase + Realtime' : 'Mode Lokal (Browser)';
+      dashBadge.textContent = isLiveAI
+        ? 'Live AI + Supabase'
+        : isCloud
+          ? 'Cloud Supabase'
+          : 'Mode Lokal (Browser)';
     }
   }
 
@@ -223,6 +250,9 @@
       const copyBtn = isManualPublish && pubPkg
         ? `<button id="btn-wf-copy-publish" type="button" class="px-3 py-2 rounded-xl bg-sky-100 text-sky-800 text-xs font-bold active:scale-95">📋 Salin Caption</button>`
         : '';
+      const ideaBankBtn = stepCfg.step === 3
+        ? `<button id="btn-wf-goto-ideabank" type="button" class="px-3 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold active:scale-95">💡 Pilih di Idea Bank</button>`
+        : '';
 
       actionPanelHtml = `
         <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 space-y-2.5">
@@ -233,7 +263,7 @@
           </div>
           ${
             latestArtifact
-              ? `<pre class="text-[11px] bg-white p-2.5 rounded-xl border border-amber-200/80 text-slate-700 overflow-x-auto max-h-40 whitespace-pre-wrap">${esc(JSON.stringify(latestArtifact.content, null, 2))}</pre>`
+              ? `<div class="text-xs bg-white p-3 rounded-xl border border-amber-200/80 text-slate-700 leading-relaxed max-h-52 overflow-y-auto whitespace-pre-line">${esc(formatArtifactReadableText(latestArtifact))}</div>`
               : ''
           }
           <input id="input-wf-revision-note" type="text" placeholder="Catatan revisi (opsional jika menolak)..."
@@ -245,6 +275,7 @@
             <button id="btn-wf-reject" type="button" class="px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold active:scale-95">
               ✕ Tolak ke Langkah ${esc(stepCfg.rejectStep)}
             </button>
+            ${ideaBankBtn}
             ${copyBtn}
           </div>
         </div>
@@ -283,6 +314,9 @@
 
     const btnApprove = document.getElementById('btn-wf-approve');
     if (btnApprove) btnApprove.addEventListener('click', () => wf.approveCurrentGate());
+
+    const btnIdeaBank = document.getElementById('btn-wf-goto-ideabank');
+    if (btnIdeaBank) btnIdeaBank.addEventListener('click', () => Nexora.navigation.navigateTo('idea-bank'));
 
     const btnReject = document.getElementById('btn-wf-reject');
     if (btnReject) {
@@ -326,19 +360,19 @@
         artifactsEl.innerHTML = `
           <details class="rounded-2xl border border-slate-200 bg-white p-3">
             <summary class="text-xs font-bold text-slate-700 cursor-pointer">
-              📦 Riwayat Hasil Kerja Tersimpan (${artifacts.length} Artifact)
+              📦 Riwayat Hasil Kerja Tersimpan (${artifacts.length} Hasil)
             </summary>
-            <div class="mt-2.5 space-y-2 max-h-60 overflow-y-auto">
+            <div class="mt-2.5 space-y-2 max-h-72 overflow-y-auto">
               ${artifacts
                 .slice(0, 8)
                 .map(
                   (a) => `
-                <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-[11px]">
-                  <div class="flex items-center justify-between font-bold text-sky-700 mb-1">
-                    <span>${esc(String(a.employee_id).toUpperCase())} • ${esc(a.artifact_type)} (v${esc(a.version)})</span>
-                    <span>${a.approved_by_director ? '✓ ACC' : ''}</span>
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                  <div class="flex items-center justify-between font-bold text-sky-700 mb-1.5">
+                    <span>${esc(String(a.employee_id).toUpperCase())} • Versi ${esc(a.version)}</span>
+                    <span>${a.approved_by_director ? '✓ Disetujui' : ''}</span>
                   </div>
-                  <pre class="text-[10px] text-slate-600 whitespace-pre-wrap overflow-x-auto">${esc(JSON.stringify(a.content, null, 2))}</pre>
+                  <div class="text-[11px] text-slate-700 leading-relaxed whitespace-pre-line">${esc(formatArtifactReadableText(a))}</div>
                 </div>
               `
                 )

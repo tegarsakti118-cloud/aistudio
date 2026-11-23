@@ -348,7 +348,14 @@
       this.activeProjectId = project.id;
       const artifacts = this.getProjectArtifacts(project.id);
       const sariArt = artifacts.find((a) => a.employee_id === 'sari');
-      const ideas = sariArt && sariArt.content && Array.isArray(sariArt.content.ideas) ? sariArt.content.ideas : [];
+      if (!sariArt || sariArt.source_mode === 'simulation') {
+        Nexora.state.pushNotification(
+          'Pemilihan ide ditolak: hasil SARI belum berasal dari AI Live.',
+          'error'
+        );
+        return;
+      }
+      const ideas = sariArt.content && Array.isArray(sariArt.content.ideas) ? sariArt.content.ideas : [];
       const chosenIdea = ideas[ideaIndex] || ideas[0] || { title: project.title };
 
       const sariEmp = Nexora.state.getEmployee('sari');
@@ -557,34 +564,59 @@
 
       let outputPayload = null;
       let usedLiveAI = false;
-      let aiMetaText = 'Mode Simulasi';
+      let aiMetaText = 'Live AI';
 
-      if (Nexora.aiService && Nexora.aiService.isLiveAIAvailable()) {
-        try {
-          const aiResult = await Nexora.aiService.runAgent({
-            employeeId: empId,
-            projectId: project.id,
-            taskId: taskRecord.id,
-            stepOrder: stepCfg.step,
-            taskTitle,
-            inputPayload,
-            revisionNotes: options.revisionNotes || null
-          });
-          outputPayload = aiResult.output;
-          usedLiveAI = true;
-          const totalTok = (aiResult.usage?.prompt_tokens || 0) + (aiResult.usage?.completion_tokens || 0);
-          aiMetaText = `Live AI (${aiResult.model} • ${totalTok} token)`;
-          Nexora.state.addLog(emp.name, `Output AI diterima (${aiMetaText}).`);
-          Nexora.aiService.fetchUsageLogs(20).catch(() => {});
-        } catch (aiErr) {
-          Nexora.state.addLog('SISTEM', `AI Edge Function fallback ke simulasi (${aiErr.message}).`);
-          Nexora.state.pushNotification(`Live AI belum aktif (${aiErr.message}) — memakai fallback simulasi.`, 'warning', emp.id);
+      try {
+        if (!Nexora.aiService || !Nexora.aiService.isLiveAIAvailable()) {
+          throw new Error('AI Live tidak tersedia. Periksa koneksi Supabase dan pengaturan AI.');
         }
-      }
 
-      if (!outputPayload) {
-        await this.delay(550);
-        outputPayload = this.generateStepOutput(project, stepCfg, inputPayload, attemptCount);
+        const aiResult = await Nexora.aiService.runAgent({
+          employeeId: empId,
+          projectId: project.id,
+          taskId: taskRecord.id,
+          stepOrder: stepCfg.step,
+          taskTitle,
+          inputPayload,
+          revisionNotes: options.revisionNotes || null
+        });
+
+        if (!aiResult || !aiResult.output) {
+          throw new Error('AI tidak mengembalikan output yang valid.');
+        }
+
+        outputPayload = aiResult.output;
+        usedLiveAI = true;
+        const totalTok = (aiResult.usage?.prompt_tokens || 0) + (aiResult.usage?.completion_tokens || 0);
+        aiMetaText = `Live AI (${aiResult.model || 'Gemini'} • ${totalTok} token)`;
+        Nexora.state.addLog(emp.name, `Output AI diterima (${aiMetaText}).`);
+        Nexora.aiService.fetchUsageLogs(20).catch(() => {});
+      } catch (aiErr) {
+        const errorMessage = aiErr && aiErr.message ? aiErr.message : 'Kesalahan AI tidak diketahui.';
+        taskRecord.status = S.FAILED;
+        taskRecord.progress = 0;
+        taskRecord.error_message = errorMessage;
+        taskRecord.completed_at = new Date().toISOString();
+
+        if (this.isCloudMode()) {
+          await Nexora.supabaseService.updateTask(taskRecord.id, {
+            status: S.FAILED,
+            progress: 0,
+            error_message: errorMessage,
+            completed_at: taskRecord.completed_at
+          });
+        }
+
+        this.upsertLocalTask(project.id, taskRecord);
+        this.syncEmployeeToCanvas(emp, S.FAILED, 0, taskTitle, `AI gagal: ${errorMessage}`);
+        Nexora.state.addLog('SISTEM', `AI Live gagal pada ${stepCfg.label}: ${errorMessage}`);
+        Nexora.state.pushNotification(
+          `Tugas ${emp.name} gagal. Tidak ada hasil simulasi yang dibuat. ${errorMessage}`,
+          'error',
+          emp.id
+        );
+        await this.updateProjectState(project, { status: 'failed' });
+        return;
       }
 
       const formattedText = `✨ Sumber: ${aiMetaText}\n\n` + this.formatPayloadText(stepCfg, outputPayload);
@@ -714,7 +746,20 @@
 
     async executeFeedbackLoopStep(project, stepCfg) {
       const dina = Nexora.state.getEmployee('dina');
-      const perf = project.performance_metrics || this.generateStepOutput(project, Nexora.getWorkflowStep(11), {}, 1);
+      const dinaArtifact = this.getProjectArtifacts(project.id).find((a) => a.employee_id === 'dina');
+      if (!dinaArtifact || dinaArtifact.source_mode === 'simulation') {
+        if (dina) {
+          this.syncEmployeeToCanvas(dina, S.FAILED, 0, 'Feedback Loop', 'Gagal: data performa Live AI tidak tersedia.');
+        }
+        await this.updateProjectState(project, { status: 'failed' });
+        Nexora.state.pushNotification(
+          'Feedback Loop dihentikan: data evaluasi DINA bukan hasil AI Live.',
+          'error',
+          'dina'
+        );
+        return;
+      }
+      const perf = project.performance_metrics || dinaArtifact.content || {};
 
       this.latestFeedback = {
         fromProjectId: project.id,
@@ -775,9 +820,14 @@
 
       const artifacts = this.getProjectArtifacts(project.id);
       const latestArtifact = artifacts.find((a) => a.employee_id === stepCfg.sourceEmployeeId);
-      if (latestArtifact) {
-        latestArtifact.approved_by_director = true;
+      if (!latestArtifact || latestArtifact.source_mode === 'simulation') {
+        Nexora.state.pushNotification(
+          'Approval ditolak: hasil pekerjaan tidak ditemukan atau masih berupa simulasi.',
+          'error'
+        );
+        return;
       }
+      latestArtifact.approved_by_director = true;
 
       const patch = { current_step: stepCfg.nextStep, status: 'active' };
       if (stepCfg.step === 3 && latestArtifact) {

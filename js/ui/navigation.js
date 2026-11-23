@@ -8,8 +8,8 @@
     { id: 'trend-research', label: 'Trend Research', icon: '🔍', phase: 'Fase 3 • Aktif' },
     { id: 'idea-bank', label: 'Idea Bank', icon: '💡', phase: 'Fase 3 • Aktif' },
     { id: 'script-management', label: 'Script Management', icon: '📝', phase: 'Fase 4 • Aktif' },
-    { id: 'video-production', label: 'Video Production', icon: '🎬', phase: 'Fase 5' },
-    { id: 'quality-control', label: 'Quality Control', icon: '✅', phase: 'Fase 5' },
+    { id: 'video-production', label: 'Video Production', icon: '🎬', phase: 'Fase 5 • Aktif' },
+    { id: 'quality-control', label: 'Quality Control', icon: '✅', phase: 'Fase 5 • Aktif' },
     { id: 'content-calendar', label: 'Content Calendar', icon: '📅', phase: 'Fase 4 • Aktif' },
     { id: 'analytics', label: 'Analytics', icon: '📈', phase: 'Fase 6' },
     { id: 'settings', label: 'Settings', icon: '⚙️', phase: 'Fase 2–3 • Aktif' }
@@ -22,6 +22,8 @@
     'trend-research',
     'idea-bank',
     'script-management',
+    'video-production',
+    'quality-control',
     'content-calendar',
     'settings'
   ]);
@@ -69,6 +71,12 @@
       if (pageId === 'script-management' && Nexora.scriptManagementView) {
         Nexora.scriptManagementView.render();
       }
+      if (pageId === 'video-production' && Nexora.videoProductionView) {
+        Nexora.videoProductionView.render();
+      }
+      if (pageId === 'quality-control' && Nexora.qualityControlView) {
+        Nexora.qualityControlView.render();
+      }
       if (pageId === 'content-calendar' && Nexora.contentCalendarView) {
         Nexora.contentCalendarView.render();
       }
@@ -77,7 +85,7 @@
       document.getElementById('placeholder-phase-badge').textContent = `Jadwal Rilis: ${meta.phase}`;
       document.getElementById('placeholder-title').textContent = meta.label;
       document.getElementById('placeholder-desc').textContent =
-        `Halaman ${meta.label} akan dibangun bertahap sesuai roadmap pengembangan Nexora AI Studio.`;
+        `Halaman ${meta.label} akan dibangun pada tahap berikutnya dalam roadmap Nexora AI Studio.`;
       document.getElementById('page-phase-placeholder').classList.remove('hidden');
     }
 

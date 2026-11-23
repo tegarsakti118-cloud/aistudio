@@ -146,10 +146,10 @@
 
     if (headerMode) {
       headerMode.textContent = isLiveAI
-        ? 'Fase 4 • Live AI + Cloud'
+        ? 'Fase 5 • Live AI + Cloud'
         : isCloud
-          ? 'Fase 4 • Cloud Supabase'
-          : 'Fase 4 • Mode Lokal';
+          ? 'Fase 5 • Cloud Supabase'
+          : 'Fase 5 • Mode Lokal';
     }
     if (dashBadge) {
       dashBadge.textContent = isLiveAI
@@ -256,6 +256,9 @@
       const scriptBtn = stepCfg.step === 6
         ? `<button id="btn-wf-goto-scripts" type="button" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold active:scale-95">📝 Edit Naskah</button>`
         : '';
+      const videoBtn = isManualPublish
+        ? `<button id="btn-wf-goto-video" type="button" class="px-3 py-2 rounded-xl bg-indigo-50 text-indigo-800 border border-indigo-200 text-xs font-bold active:scale-95">🎬 Render Video</button>`
+        : '';
       const calendarBtn = isManualPublish
         ? `<button id="btn-wf-goto-calendar" type="button" class="px-3 py-2 rounded-xl bg-teal-50 text-teal-800 border border-teal-200 text-xs font-bold active:scale-95">📅 Content Calendar</button>`
         : '';
@@ -283,6 +286,7 @@
             </button>
             ${ideaBankBtn}
             ${scriptBtn}
+            ${videoBtn}
             ${calendarBtn}
             ${copyBtn}
           </div>
@@ -328,6 +332,9 @@
 
     const btnScripts = document.getElementById('btn-wf-goto-scripts');
     if (btnScripts) btnScripts.addEventListener('click', () => Nexora.navigation.navigateTo('script-management'));
+
+    const btnVideo = document.getElementById('btn-wf-goto-video');
+    if (btnVideo) btnVideo.addEventListener('click', () => Nexora.navigation.navigateTo('video-production'));
 
     const btnCalendar = document.getElementById('btn-wf-goto-calendar');
     if (btnCalendar) btnCalendar.addEventListener('click', () => Nexora.navigation.navigateTo('content-calendar'));

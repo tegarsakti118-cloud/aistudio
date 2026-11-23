@@ -44,6 +44,7 @@
       ['Nexora.WORKFLOW_STEPS (js/config/workflowConfig.js)', () => Array.isArray(Nexora.WORKFLOW_STEPS)],
       ['Nexora.supabaseService (js/services/supabaseService.js)', () => Boolean(Nexora.supabaseService)],
       ['Nexora.aiService (js/services/aiService.js)', () => Boolean(Nexora.aiService)],
+      ['Nexora.videoRenderer (js/services/videoRenderer.js)', () => Boolean(Nexora.videoRenderer)],
       ['Nexora.state (js/state/studioState.js)', () => Boolean(Nexora.state)],
       ['Nexora.workflowEngine (js/workflow/workflowEngine.js)', () => Boolean(Nexora.workflowEngine)],
       ['Nexora.officeSprites (js/office/officeSprites.js)', () => Boolean(Nexora.officeSprites)],
@@ -66,6 +67,8 @@
     safeRun('trendResearchView', () => Nexora.trendResearchView && Nexora.trendResearchView.init());
     safeRun('ideaBankView', () => Nexora.ideaBankView && Nexora.ideaBankView.init());
     safeRun('scriptManagementView', () => Nexora.scriptManagementView && Nexora.scriptManagementView.init());
+    safeRun('videoProductionView', () => Nexora.videoProductionView && Nexora.videoProductionView.init());
+    safeRun('qualityControlView', () => Nexora.qualityControlView && Nexora.qualityControlView.init());
     safeRun('contentCalendarView', () => Nexora.contentCalendarView && Nexora.contentCalendarView.init());
     safeRun('settingsView', () => Nexora.settingsView && Nexora.settingsView.init());
     safeRun('dashboardView', () => Nexora.dashboardView && Nexora.dashboardView.init());
@@ -160,6 +163,8 @@
           if (Nexora.trendResearchView) Nexora.trendResearchView.render();
           if (Nexora.ideaBankView) Nexora.ideaBankView.render();
           if (Nexora.scriptManagementView) Nexora.scriptManagementView.render();
+          if (Nexora.videoProductionView) Nexora.videoProductionView.render();
+          if (Nexora.qualityControlView) Nexora.qualityControlView.render();
           if (Nexora.contentCalendarView) Nexora.contentCalendarView.render();
         })
         .catch(() => {});

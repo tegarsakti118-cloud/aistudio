@@ -11,8 +11,18 @@
     return 'bg-sky-100 text-sky-700 border-sky-200';
   }
 
+  function triggerDownload(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
   function render() {
     const wf = Nexora.workflowEngine;
+    const vr = Nexora.videoRenderer;
     if (!wf) return;
 
     const allEntries = wf.getCalendarEntries();
@@ -75,6 +85,8 @@
       .map(({ project, schedule }) => {
         const arts = wf.getProjectArtifacts(project.id);
         const melArt = arts.find((a) => a.employee_id === 'mel');
+        const hasScript = Boolean(project.final_script || arts.some((a) => a.employee_id === 'bima'));
+        const rendered = vr ? vr.getRenderedVideo(project.id) : null;
         const pubPkg = project.publish_package || (melArt ? melArt.content : null);
         const isReadyToPost = project.current_step === 10;
 
@@ -127,6 +139,19 @@
 
             <div class="flex flex-wrap gap-2 justify-end">
               ${
+                rendered
+                  ? `<button type="button" data-download-cal-vid="${esc(project.id)}"
+                      class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white text-xs font-bold active:scale-95">
+                      ⬇️ Download Video (${esc(rendered.ext.toUpperCase())})
+                    </button>`
+                  : hasScript
+                    ? `<button type="button" data-goto-render="${esc(project.id)}"
+                        class="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold active:scale-95">
+                        🎬 Render Video Dulu
+                      </button>`
+                    : ''
+              }
+              ${
                 pubPkg
                   ? `<button type="button" data-copy-cal="${esc(project.id)}"
                       class="px-3 py-1.5 rounded-xl bg-sky-100 text-sky-800 text-xs font-bold active:scale-95">
@@ -162,6 +187,24 @@
           platform: card.querySelector('.cal-platform').value
         });
         Nexora.notificationsUI.showToast('Jadwal publikasi diperbarui.', 'success');
+      });
+    });
+
+    listEl.querySelectorAll('[data-download-cal-vid]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const pid = btn.getAttribute('data-download-cal-vid');
+        const rendered = vr ? vr.getRenderedVideo(pid) : null;
+        const proj = wf.projects.find((p) => p.id === pid);
+        if (!rendered) return;
+        const safeName = (proj ? proj.title : 'nexora-video').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 32);
+        triggerDownload(rendered.url, `${safeName}.${rendered.ext}`);
+      });
+    });
+
+    listEl.querySelectorAll('[data-goto-render]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        wf.setActiveProject(btn.getAttribute('data-goto-render'));
+        Nexora.navigation.navigateTo('video-production');
       });
     });
 

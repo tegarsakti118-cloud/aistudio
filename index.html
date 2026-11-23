@@ -11,24 +11,13 @@
       theme: {
         extend: {
           colors: {
-            nexora: {
-              dark: '#0B192C',
-              navy: '#0F2942',
-              blue: '#0284C7',
-              sky: '#38BDF8',
-              teal: '#14B8A6',
-              aqua: '#2DD4BF',
-              light: '#F0F9FF'
-            }
+            nexora: { dark: '#0B192C', navy: '#0F2942', blue: '#0284C7', sky: '#38BDF8', teal: '#14B8A6', aqua: '#2DD4BF', light: '#F0F9FF' }
           },
-          fontFamily: {
-            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
-          }
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
         }
       }
     };
   </script>
-
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased selection:bg-teal-200 selection:text-slate-900 overflow-x-hidden">
@@ -37,43 +26,30 @@
   <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-sky-100 shadow-sm">
     <div class="max-w-7xl mx-auto px-3 sm:px-5 h-14 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5">
-        <button id="btn-open-drawer" aria-label="Buka Menu Navigasi"
-          class="p-2 rounded-xl bg-sky-50 hover:bg-sky-100 active:scale-95 text-sky-700 transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" />
-          </svg>
+        <button id="btn-open-drawer" aria-label="Buka Menu Navigasi" class="p-2 rounded-xl bg-sky-50 hover:bg-sky-100 active:scale-95 text-sky-700 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10" /></svg>
         </button>
-
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-500 to-teal-400 flex items-center justify-center text-white font-bold shadow-sm shadow-sky-500/30 text-sm">N</div>
           <div class="leading-tight">
-            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">
-              Nexora <span class="text-sky-600">AI Studio</span>
-            </h1>
+            <h1 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight">Nexora <span class="text-sky-600">AI Studio</span></h1>
             <div class="flex items-center gap-1.5 text-[10px] font-medium text-slate-500">
               <span class="inline-block w-1.5 h-1.5 rounded-full bg-teal-500 animate-pulse"></span>
-              <span id="header-studio-mode">Fase 4 • Mode Lokal</span>
+              <span id="header-studio-mode">Fase 5 • Mode Lokal</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <div id="header-active-pill"
-          class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-sky-50 border border-sky-200 text-xs font-semibold text-sky-700">
+        <div id="header-active-pill" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-sky-50 border border-sky-200 text-xs font-semibold text-sky-700">
           <span class="w-2 h-2 rounded-full bg-teal-500 animate-ping-slow"></span>
           <span id="header-active-count">0/8</span>
           <span class="hidden sm:inline">Aktif</span>
         </div>
-
-        <button id="btn-toggle-notif-center" aria-label="Notifikasi"
-          class="relative p-2 rounded-xl bg-slate-50 hover:bg-sky-50 active:scale-95 text-slate-700 border border-slate-200 transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round"
-              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-          <span id="notif-badge"
-            class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow">0</span>
+        <button id="btn-toggle-notif-center" aria-label="Notifikasi" class="relative p-2 rounded-xl bg-slate-50 hover:bg-sky-50 active:scale-95 text-slate-700 border border-slate-200 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
+          <span id="notif-badge" class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center shadow">0</span>
         </button>
       </div>
     </div>
@@ -81,37 +57,28 @@
 
   <!-- SLIDE-OUT NAVIGATION DRAWER -->
   <div id="nav-drawer-backdrop" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden transition-opacity"></div>
-  <aside id="nav-drawer" aria-hidden="true" inert
-    class="fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
+  <aside id="nav-drawer" aria-hidden="true" inert class="fixed top-0 left-0 z-50 h-full w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 flex flex-col">
     <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-sky-600 to-teal-500 text-white">
       <div>
         <p class="text-xs uppercase tracking-wider text-sky-100 font-semibold">Studio Direktur</p>
         <h2 class="text-lg font-bold">Nexora Menu</h2>
       </div>
       <button id="btn-close-drawer" class="p-1.5 rounded-lg bg-white/15 hover:bg-white/25 transition">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
     </div>
-
     <nav id="drawer-nav-list" class="flex-1 overflow-y-auto p-3 space-y-1"></nav>
-
     <div class="p-3 border-t border-slate-100 bg-slate-50 space-y-2 text-[11px] text-slate-500">
       <div>
-        <div class="font-semibold text-slate-700">Status Build: Fase 4</div>
-        <div>Kantor 2D, Live AI, Trend, Idea Bank, Script Management & Calendar.</div>
+        <div class="font-semibold text-slate-700">Status Build: Fase 5</div>
+        <div>Kantor 2D, Live AI, Scripts, Video Render 9:16, QC & Calendar.</div>
       </div>
-      <button id="btn-reset-simulation"
-        class="w-full py-2 px-3 rounded-xl bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 text-slate-700 font-bold text-xs transition active:scale-95">
-        ↻ Reset Simulasi Lokal
-      </button>
+      <button id="btn-reset-simulation" class="w-full py-2 px-3 rounded-xl bg-white border border-slate-200 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-200 text-slate-700 font-bold text-xs transition active:scale-95">↻ Reset Simulasi Lokal</button>
     </div>
   </aside>
 
-  <!-- NOTIFICATION CENTER -->
-  <div id="notif-panel"
-    class="hidden fixed top-16 right-3 z-40 w-[calc(100vw-24px)] max-w-sm bg-white rounded-2xl shadow-2xl border border-sky-100 overflow-hidden">
+  <!-- NOTIFICATION CENTER & TOAST -->
+  <div id="notif-panel" class="hidden fixed top-16 right-3 z-40 w-[calc(100vw-24px)] max-w-sm bg-white rounded-2xl shadow-2xl border border-sky-100 overflow-hidden">
     <div class="px-4 py-3 bg-sky-50/80 border-b border-sky-100 flex items-center justify-between">
       <h3 class="text-sm font-bold text-slate-800">Notifikasi Studio</h3>
       <button id="btn-clear-notifs" class="text-xs font-semibold text-sky-600 hover:underline">Tandai Dibaca</button>
@@ -120,8 +87,6 @@
       <p class="text-xs text-slate-400 text-center py-6">Belum ada notifikasi baru.</p>
     </div>
   </div>
-
-  <!-- TOAST CONTAINER -->
   <div id="toast-container" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-24px)] max-w-md space-y-2 pointer-events-none"></div>
 
   <main class="max-w-7xl mx-auto px-2.5 sm:px-5 pt-3 pb-24">
@@ -133,19 +98,12 @@
           <span class="px-2.5 py-1 rounded-xl bg-sky-600 text-white text-xs font-bold shadow-sm">Kantor Virtual 2D</span>
           <span class="text-xs text-slate-500 hidden sm:inline">Ketuk karakter atau meja untuk inspeksi & perintah kerja</span>
         </div>
-
         <div class="flex items-center gap-1.5 flex-wrap">
-          <button id="btn-toggle-autosim"
-            class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-teal-500 text-white shadow-sm shadow-teal-500/20 active:scale-95 transition">
+          <button id="btn-toggle-autosim" class="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 bg-teal-500 text-white shadow-sm shadow-teal-500/20 active:scale-95 transition">
             <span id="autosim-dot" class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
             <span id="autosim-label">Simulasi: ON</span>
           </button>
-
-          <button id="btn-sim-step"
-            class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 active:scale-95 transition">
-            +1 Siklus
-          </button>
-
+          <button id="btn-sim-step" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-sky-50 text-sky-700 border border-sky-200 hover:bg-sky-100 active:scale-95 transition">+1 Siklus</button>
           <div class="flex items-center bg-slate-100 rounded-xl p-0.5 border border-slate-200">
             <button id="btn-zoom-out" class="px-2 py-1 text-xs font-bold text-slate-600 hover:text-sky-600">−</button>
             <span id="zoom-level-label" class="px-1.5 text-[11px] font-semibold text-slate-700">Fit</span>
@@ -167,15 +125,9 @@
         <div class="lg:col-span-8 xl:col-span-9 relative rounded-3xl overflow-hidden bg-slate-900 border-2 border-sky-200/80 shadow-xl">
           <div id="office-canvas-wrapper" class="relative w-full overflow-hidden touch-pan-y select-none bg-[#e6f4fa]">
             <canvas id="office-canvas" class="block w-full h-auto cursor-pointer touch-pan-y"></canvas>
-
             <div class="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-              <div class="px-2.5 py-1 rounded-full bg-slate-900/75 backdrop-blur-sm text-white text-[10px] sm:text-xs font-medium pointer-events-auto">
-                💡 Ketuk karakter untuk buka panel kontrol • Geser saat zoom
-              </div>
-              <button id="btn-reset-view"
-                class="hidden px-2.5 py-1 rounded-full bg-white/90 text-sky-700 text-[11px] font-bold shadow pointer-events-auto">
-                Reset Kamera
-              </button>
+              <div class="px-2.5 py-1 rounded-full bg-slate-900/75 backdrop-blur-sm text-white text-[10px] sm:text-xs font-medium pointer-events-auto">💡 Ketuk karakter untuk buka panel kontrol • Geser saat zoom</div>
+              <button id="btn-reset-view" class="hidden px-2.5 py-1 rounded-full bg-white/90 text-sky-700 text-[11px] font-bold shadow pointer-events-auto">Reset Kamera</button>
             </div>
           </div>
         </div>
@@ -184,8 +136,7 @@
           <div id="approval-alert-card" class="hidden bg-amber-50 border border-amber-200 rounded-2xl p-3 shadow-sm">
             <div class="flex items-center justify-between mb-1.5">
               <span class="text-xs font-bold text-amber-800 flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
-                Menunggu Persetujuan Direktur
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>Menunggu Persetujuan Direktur
               </span>
             </div>
             <div id="approval-alert-list" class="space-y-1.5"></div>
@@ -207,7 +158,7 @@
       </div>
     </section>
 
-    <!-- PAGE: DASHBOARD DIREKTUR -->
+    <!-- PAGE: DASHBOARD -->
     <section id="page-dashboard" class="app-page hidden space-y-4">
       <div class="bg-gradient-to-r from-sky-700 via-sky-600 to-teal-500 rounded-3xl p-4 sm:p-6 text-white shadow-lg">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -220,10 +171,8 @@
             <p class="text-xs sm:text-sm text-sky-100 mt-0.5">Pantau produktivitas 8 karyawan AI dan kelola pipeline produksi 12 langkah.</p>
           </div>
           <div class="flex flex-wrap gap-2">
-            <button id="btn-dir-start-all"
-              class="px-3.5 py-2 rounded-xl bg-white text-sky-700 font-bold text-xs shadow hover:bg-sky-50 active:scale-95 transition">▶ Mulai Semua Tugas</button>
-            <button id="btn-dir-stop-all"
-              class="px-3.5 py-2 rounded-xl bg-slate-900/30 text-white border border-white/25 font-bold text-xs hover:bg-slate-900/45 active:scale-95 transition">■ Hentikan Semua</button>
+            <button id="btn-dir-start-all" class="px-3.5 py-2 rounded-xl bg-white text-sky-700 font-bold text-xs shadow hover:bg-sky-50 active:scale-95 transition">▶ Mulai Semua Tugas</button>
+            <button id="btn-dir-stop-all" class="px-3.5 py-2 rounded-xl bg-slate-900/30 text-white border border-white/25 font-bold text-xs hover:bg-slate-900/45 active:scale-95 transition">■ Hentikan Semua</button>
           </div>
         </div>
       </div>
@@ -240,18 +189,14 @@
         <div id="dina-feedback-banner" class="hidden rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900"></div>
 
         <form id="form-new-project" class="grid grid-cols-1 sm:grid-cols-12 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-          <input id="input-project-title" type="text" required placeholder="Judul / topik konten baru..."
-            class="sm:col-span-5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <input id="input-project-niche" type="text" value="AI & Produktivitas" placeholder="Niche konten..."
-            class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <select id="input-project-platform"
-            class="sm:col-span-2 px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400">
+          <input id="input-project-title" type="text" required placeholder="Judul / topik konten baru..." class="sm:col-span-5 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="input-project-niche" type="text" value="AI & Produktivitas" placeholder="Niche konten..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <select id="input-project-platform" class="sm:col-span-2 px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400">
             <option value="TikTok / Reels / Shorts">TikTok / Reels / Shorts</option>
             <option value="Instagram Reels">Instagram Reels</option>
             <option value="YouTube Shorts">YouTube Shorts</option>
           </select>
-          <button type="submit"
-            class="sm:col-span-2 px-3 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🚀 Mulai Proyek</button>
+          <button type="submit" class="sm:col-span-2 px-3 py-2 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🚀 Mulai Proyek</button>
         </form>
 
         <div id="workflow-pipeline-view" class="space-y-3"></div>
@@ -285,7 +230,7 @@
       </div>
     </section>
 
-    <!-- PAGE: EMPLOYEES ROSTER -->
+    <!-- PAGE: EMPLOYEES -->
     <section id="page-employees" class="app-page hidden space-y-3">
       <div class="bg-white rounded-2xl p-4 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div>
@@ -297,7 +242,7 @@
       <div id="employees-directory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
     </section>
 
-    <!-- PAGE: TREND RESEARCH (RAKA) -->
+    <!-- PAGE: TREND RESEARCH -->
     <section id="page-trend-research" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
@@ -307,32 +252,23 @@
           </div>
           <span id="trend-mode-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-sky-100 text-sky-700">Simulasi Lokal</span>
         </div>
-
         <div id="trend-dina-insight" class="hidden rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-900"></div>
-
         <form id="form-trend-research" class="grid grid-cols-1 sm:grid-cols-12 gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-200/80">
-          <input id="input-trend-niche" type="text" required value="AI & Produktivitas" placeholder="Niche utama..."
-            class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <input id="input-trend-keywords" type="text" placeholder="Kata kunci fokus (opsional)..."
-            class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <input id="input-trend-topic" type="text" placeholder="Nama kampanye / judul riset (opsional)..."
-            class="sm:col-span-4 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
-          <select id="select-trend-platform"
-            class="sm:col-span-2 px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400">
+          <input id="input-trend-niche" type="text" required value="AI & Produktivitas" placeholder="Niche utama..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="input-trend-keywords" type="text" placeholder="Kata kunci fokus (opsional)..." class="sm:col-span-3 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="input-trend-topic" type="text" placeholder="Nama kampanye / judul riset (opsional)..." class="sm:col-span-4 px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <select id="select-trend-platform" class="sm:col-span-2 px-2.5 py-2 rounded-xl border border-slate-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-sky-400">
             <option value="TikTok / Reels / Shorts">TikTok / Reels / Shorts</option>
             <option value="Instagram Reels">Instagram Reels</option>
             <option value="YouTube Shorts">YouTube Shorts</option>
           </select>
-          <button id="btn-run-trend-research" type="submit"
-            class="sm:col-span-12 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">
-            🔍 Tugaskan RAKA Riset & Kirim ke SARI
-          </button>
+          <button id="btn-run-trend-research" type="submit" class="sm:col-span-12 py-2.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🔍 Tugaskan RAKA Riset & Kirim ke SARI</button>
         </form>
       </div>
       <div id="trend-research-results" class="space-y-3"></div>
     </section>
 
-    <!-- PAGE: IDEA BANK (SARI) -->
+    <!-- PAGE: IDEA BANK -->
     <section id="page-idea-bank" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div>
@@ -344,7 +280,7 @@
       <div id="idea-bank-list" class="space-y-3"></div>
     </section>
 
-    <!-- PAGE: SCRIPT MANAGEMENT (BIMA & DIMAS - FASE 4) -->
+    <!-- PAGE: SCRIPT MANAGEMENT -->
     <section id="page-script-management" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
         <div>
@@ -364,19 +300,15 @@
 
       <div id="script-workspace" class="hidden space-y-3">
         <div id="script-dimas-audit-card"></div>
-
         <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">🎣 Hook Pembuka (0–3 Detik)</label>
             <textarea id="input-script-hook" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
           </div>
-
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">👥 Tokoh Cerita Orisinal (pisahkan dengan koma)</label>
-            <input id="input-script-characters" type="text" placeholder="Contoh: Dito (santui), Pak Hendra (mentor)"
-              class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+            <input id="input-script-characters" type="text" placeholder="Contoh: Dito (santui), Pak Hendra (mentor)" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
           </div>
-
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <label class="text-[11px] font-bold text-slate-600">🎬 Daftar Adegan, Dialog & Arahan Visual</label>
@@ -384,7 +316,6 @@
             </div>
             <div id="script-scenes-editor" class="space-y-2"></div>
           </div>
-
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">📣 CTA / Cliffhanger</label>
@@ -395,10 +326,8 @@
               <textarea id="input-script-caption" rows="2" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400"></textarea>
             </div>
           </div>
-
           <div class="pt-2 border-t border-slate-100 space-y-2">
-            <input id="input-script-director-note" type="text" placeholder="Catatan revisi Direktur untuk BIMA (opsional)..."
-              class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+            <input id="input-script-director-note" type="text" placeholder="Catatan revisi Direktur untuk BIMA (opsional)..." class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             <div class="flex flex-wrap gap-2">
               <button id="btn-save-script-edit" type="button" class="px-3.5 py-2 rounded-xl bg-slate-800 text-white text-xs font-bold active:scale-95 transition">💾 Simpan Edit</button>
               <button id="btn-script-reaudit" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold active:scale-95 transition">🔍 Audit Ulang DIMAS</button>
@@ -410,13 +339,111 @@
       </div>
     </section>
 
-    <!-- PAGE: CONTENT CALENDAR (MEL - FASE 4) -->
+    <!-- PAGE: VIDEO PRODUCTION (LARAS - FASE 5) -->
+    <section id="page-video-production" class="app-page hidden space-y-4">
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-900">🎬 Video Production • LARAS</h2>
+          <p class="text-xs text-slate-500">Render naskah final menjadi video vertikal 9:16 (tokoh animasi, subtitle tebal, & musik latar) siap download.</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="select-video-project" class="hidden px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-xs font-bold text-sky-800"></select>
+          <span id="video-prod-status-pill" class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200 text-xs font-bold">Siap Render</span>
+        </div>
+      </div>
+
+      <div id="video-empty-state" class="bg-white rounded-3xl p-6 border border-sky-100 text-center space-y-2.5">
+        <p class="text-xs text-slate-500">Belum ada naskah untuk diproduksi. Selesaikan dulu penulisan naskah di <strong>Script Management</strong>.</p>
+        <button id="btn-video-to-scripts" type="button" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">📝 Buka Script Management</button>
+      </div>
+
+      <div id="video-workspace" class="hidden space-y-3">
+        <div id="video-storyboard-card" class="bg-white rounded-3xl p-4 border border-sky-100 shadow-sm"></div>
+
+        <div class="bg-white rounded-3xl p-4 border border-sky-100 shadow-sm space-y-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <button id="btn-render-video" type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🎬 Render Video 9:16 Sekarang</button>
+            <button id="btn-cancel-render" type="button" class="hidden px-3.5 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold active:scale-95">✕ Batalkan</button>
+          </div>
+
+          <div id="video-render-progress-wrap" class="hidden space-y-1.5">
+            <div class="flex justify-between text-xs font-bold text-sky-700">
+              <span>Merender frame 9:16 & audio...</span>
+              <span id="video-render-progress-text">0%</span>
+            </div>
+            <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+              <div id="video-render-progress-bar" class="h-full bg-gradient-to-r from-sky-500 to-teal-400 transition-all duration-200" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="flex justify-center">
+            <canvas id="video-render-canvas" class="hidden w-52 rounded-2xl border-2 border-sky-300 shadow-lg bg-slate-900"></canvas>
+          </div>
+
+          <div id="video-preview-wrap" class="hidden space-y-3 pt-2 border-t border-slate-100">
+            <div class="flex flex-col sm:flex-row items-center gap-4">
+              <video id="video-preview-player" controls playsinline class="w-56 rounded-2xl border border-slate-200 shadow-md bg-black"></video>
+              <div class="flex-1 space-y-2.5 text-xs">
+                <div class="font-bold text-emerald-700">✅ Video 9:16 Berhasil Dirender!</div>
+                <div id="video-file-meta" class="text-slate-600"></div>
+                <div class="flex flex-wrap gap-2">
+                  <button id="btn-download-video" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold active:scale-95">⬇️ Download Video</button>
+                  <button id="btn-download-srt" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold active:scale-95">📄 Download Subtitle .SRT</button>
+                  <button id="btn-video-to-qc" type="button" class="px-3.5 py-2 rounded-xl bg-teal-500 text-white text-xs font-bold active:scale-95">✅ Kirim ke QC (TIO) →</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: QUALITY CONTROL (TIO - FASE 5) -->
+    <section id="page-quality-control" class="app-page hidden space-y-4">
+      <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-900">✅ Quality Control • TIO</h2>
+          <p class="text-xs text-slate-500">Periksa hasil video, audio, dan subtitle sebelum diserahkan ke MEL untuk publikasi.</p>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <select id="select-qc-project" class="hidden px-3 py-1.5 rounded-xl border border-sky-200 bg-sky-50 text-xs font-bold text-sky-800"></select>
+          <span id="qc-status-pill" class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold">Siap QC</span>
+        </div>
+      </div>
+
+      <div id="qc-empty-state" class="bg-white rounded-3xl p-6 border border-sky-100 text-center space-y-2.5">
+        <p class="text-xs text-slate-500">Belum ada proyek di tahap produksi video. Buka <strong>Video Production</strong> terlebih dahulu.</p>
+        <button id="btn-qc-go-render" type="button" class="px-4 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">🎬 Buka Video Production</button>
+      </div>
+
+      <div id="qc-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+        <div class="lg:col-span-5 bg-white rounded-3xl p-4 border border-sky-100 shadow-sm flex flex-col items-center gap-3">
+          <video id="qc-video-player" controls playsinline class="hidden w-60 rounded-2xl border border-slate-200 shadow-md bg-black"></video>
+          <div id="qc-no-video-note" class="text-center space-y-2 py-4">
+            <p class="text-xs text-slate-500">File video 9:16 belum dirender untuk proyek ini.</p>
+            <button id="btn-qc-to-video" type="button" class="px-3.5 py-2 rounded-xl bg-sky-600 text-white text-xs font-bold">🎬 Render Video Sekarang</button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 bg-white rounded-3xl p-4 border border-sky-100 shadow-sm space-y-3">
+          <h3 class="text-sm font-extrabold text-slate-900">Laporan Pemeriksaan TIO</h3>
+          <div id="qc-report-card"></div>
+          <input id="input-qc-revision-note" type="text" placeholder="Catatan perbaikan untuk LARAS (jika ditolak)..." class="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <div class="flex flex-wrap gap-2">
+            <button id="btn-qc-pass-to-mel" type="button" class="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold active:scale-95">✓ Lolos QC → Kirim ke MEL</button>
+            <button id="btn-qc-reject-to-laras" type="button" class="px-3.5 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold active:scale-95">✕ Kembalikan ke LARAS</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAGE: CONTENT CALENDAR -->
     <section id="page-content-calendar" class="app-page hidden space-y-4">
       <div class="bg-white rounded-3xl p-4 sm:p-5 border border-sky-100 shadow-sm space-y-3">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 class="text-lg font-extrabold text-slate-900">📅 Content Calendar • Jadwal Publikasi</h2>
-            <p class="text-xs text-slate-500">Atur tanggal, jam prime-time, salin caption MEL, dan konfirmasi publikasi manual.</p>
+            <p class="text-xs text-slate-500">Download video, salin caption MEL, atur jadwal tayang, dan konfirmasi publikasi manual.</p>
           </div>
           <span id="calendar-summary-pill" class="px-3 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-200 text-xs font-bold">0 Siap Post</span>
         </div>
@@ -447,13 +474,11 @@
           <form id="form-supabase-config" class="space-y-2.5">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Supabase URL</label>
-              <input id="input-supabase-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co"
-                class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+              <input id="input-supabase-url" type="url" placeholder="https://xxxxxxxxxxxx.supabase.co" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Supabase Anon Public Key</label>
-              <input id="input-supabase-anon-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..."
-                class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+              <input id="input-supabase-anon-key" type="password" placeholder="eyJhbGciOiJIUzI1NiIs..." class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
               <button id="btn-save-supabase" type="submit" class="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">Simpan Koneksi</button>
@@ -471,13 +496,11 @@
           <form id="form-director-auth" class="space-y-2.5">
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Email Direktur</label>
-              <input id="input-auth-email" type="email" placeholder="direktur@nexora.studio"
-                class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+              <input id="input-auth-email" type="email" placeholder="direktur@nexora.studio" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div>
               <label class="block text-[11px] font-bold text-slate-600 mb-1">Password</label>
-              <input id="input-auth-password" type="password" placeholder="Minimal 6 karakter"
-                class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+              <input id="input-auth-password" type="password" placeholder="Minimal 6 karakter" class="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
               <button id="btn-auth-signin" type="button" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold active:scale-95 transition">Login Direktur</button>
@@ -570,11 +593,8 @@
 
   <!-- EMPLOYEE DETAIL MODAL -->
   <div id="employee-modal-backdrop" class="fixed inset-0 z-50 bg-slate-900/55 backdrop-blur-sm hidden"></div>
-  <div id="employee-modal" aria-hidden="true" inert
-    class="fixed inset-x-0 bottom-0 sm:inset-y-4 sm:right-4 sm:left-auto z-50 w-full sm:w-[440px] max-h-[88vh] sm:max-h-[calc(100vh-32px)] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl transform translate-y-full sm:translate-y-0 sm:translate-x-[120%] transition-transform duration-300 flex flex-col overflow-hidden">
-
+  <div id="employee-modal" aria-hidden="true" inert class="fixed inset-x-0 bottom-0 sm:inset-y-4 sm:right-4 sm:left-auto z-50 w-full sm:w-[440px] max-h-[88vh] sm:max-h-[calc(100vh-32px)] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl transform translate-y-full sm:translate-y-0 sm:translate-x-[120%] transition-transform duration-300 flex flex-col overflow-hidden">
     <div class="sm:hidden flex justify-center pt-2.5 pb-1"><div class="w-10 h-1.5 rounded-full bg-slate-200"></div></div>
-
     <div id="modal-header" class="px-4 py-3 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-sky-50 to-teal-50">
       <div class="flex items-center gap-3">
         <div id="modal-avatar" class="w-12 h-12 rounded-2xl flex items-center justify-center text-white font-extrabold text-lg shadow-md"></div>
@@ -611,10 +631,8 @@
           <button id="btn-emp-approve" class="px-3 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold active:scale-95 transition">✓ Setujui Hasil</button>
           <button id="btn-emp-reject" class="px-3 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold active:scale-95 transition">✕ Tolak / Revisi</button>
         </div>
-
         <form id="form-emp-instruction" class="flex gap-1.5 pt-1">
-          <input id="input-emp-instruction" type="text" placeholder="Kirim instruksi ke karyawan ini..."
-            class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
+          <input id="input-emp-instruction" type="text" placeholder="Kirim instruksi ke karyawan ini..." class="flex-1 px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-sky-400" />
           <button type="submit" class="px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-white text-xs font-bold active:scale-95 transition">Kirim</button>
         </form>
       </div>
@@ -628,14 +646,8 @@
       </div>
 
       <div class="grid grid-cols-1 gap-2.5 bg-white border border-slate-200 rounded-2xl p-3.5">
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kepribadian</span>
-          <p id="modal-personality" class="text-xs text-slate-700 mt-0.5"></p>
-        </div>
-        <div>
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Tanggung Jawab & Kemampuan</span>
-          <ul id="modal-skills" class="mt-1 space-y-1 text-xs text-slate-700 list-disc list-inside"></ul>
-        </div>
+        <div><span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Kepribadian</span><p id="modal-personality" class="text-xs text-slate-700 mt-0.5"></p></div>
+        <div><span class="text-[11px] font-bold uppercase tracking-wider text-slate-500">Tanggung Jawab & Kemampuan</span><ul id="modal-skills" class="mt-1 space-y-1 text-xs text-slate-700 list-disc list-inside"></ul></div>
       </div>
 
       <div class="space-y-1.5">
@@ -653,6 +665,7 @@
   <script defer src="js/config/workflowConfig.js"></script>
   <script defer src="js/services/supabaseService.js"></script>
   <script defer src="js/services/aiService.js"></script>
+  <script defer src="js/services/videoRenderer.js"></script>
   <script defer src="js/state/studioState.js"></script>
   <script defer src="js/workflow/workflowEngine.js"></script>
   <script defer src="js/office/officeSprites.js"></script>
@@ -662,6 +675,8 @@
   <script defer src="js/ui/trendResearchView.js"></script>
   <script defer src="js/ui/ideaBankView.js"></script>
   <script defer src="js/ui/scriptManagementView.js"></script>
+  <script defer src="js/ui/videoProductionView.js"></script>
+  <script defer src="js/ui/qualityControlView.js"></script>
   <script defer src="js/ui/contentCalendarView.js"></script>
   <script defer src="js/ui/settingsView.js"></script>
   <script defer src="js/ui/dashboardView.js"></script>

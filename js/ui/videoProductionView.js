@@ -35,7 +35,7 @@
     a.remove();
   }
 
-  function buildClaudePrompt(project) {
+  function buildClaudePrompt(project, audioFile) {
     const wf = Nexora.workflowEngine;
     const script = getScriptForProject(wf, project);
     const artifacts = wf.getProjectArtifacts(project.id);
@@ -49,7 +49,13 @@
       `PLATFORM: ${project.target_platform || 'TikTok / Reels / Shorts'}`,
       'FORMAT: vertikal 9:16, target 30–60 detik kecuali durasi naskah menentukan lain.',
       'ATURAN TOKOH: nama tokoh cerita harus orisinal. DILARANG memakai nama karyawan Nexora seperti RAKA, SARI, BIMA, DIMAS, LARAS, TIO, MEL, atau DINA sebagai nama tokoh cerita. Pertahankan wajah, pakaian, warna, proporsi, dan suara setiap tokoh secara konsisten di semua adegan.',
-      'ATURAN PRODUKSI: tampilkan gerakan nyata, perubahan pose, ekspresi, pergerakan kamera, dan transisi antarscene. Sertakan dialog/narasi Bahasa Indonesia, musik latar yang sesuai, efek suara seperlunya, dan subtitle yang sinkron. Jangan mengganti adegan dengan gambar statis.',
+      'ATURAN PRODUKSI VISUAL: buat animasi bergerak yang berkelanjutan pada setiap adegan, dengan gestur tubuh, ekspresi wajah, gerakan kamera, dan transisi yang halus. Dilarang membuat slideshow, rangkaian gambar diam, atau adegan yang hanya diberi efek zoom.',
+      'ATURAN AUDIO WAJIB: ikuti jenis suara yang tertulis di NASKAH FINAL. Jika naskah berisi narasi, hasilkan voice-over narator. Jika naskah berisi dialog tokoh, ucapkan dialog tersebut dengan suara tokohnya. Jika berisi keduanya, hasilkan keduanya sesuai urutan naskah. Tidak wajib menambahkan percakapan antartokoh jika naskah memang tidak memuat percakapan.',
+      'JANGAN HILANGKAN SUARA: setiap bagian naskah yang ditandai sebagai narasi, dialog, atau ucapan harus benar-benar terdengar dalam audio video. Jangan mengganti suara dengan subtitle, teks layar, atau musik. Jangan menambahkan percakapan baru yang tidak ada di naskah dan jangan mengubah isi kalimat tanpa alasan.',
+      'SUMBER AUDIO UTAMA: gunakan file audio TTS yang akan dilampirkan pengguna pada pesan Claude yang sama dengan prompt ini. Audio terlampir adalah sumber suara final dan wajib dipakai sebagai audio utama video. Jangan membuat ulang suara, jangan mengganti suara, jangan mengubah urutan, jangan memotong, dan jangan menambahkan dialog/narasi yang tidak ada di audio. Jika ada bagian naskah yang tidak cocok dengan audio, pertahankan audio dan laporkan perbedaannya.',
+      `FILE AUDIO YANG DISIAPKAN DI NEXORA: ${audioFile ? audioFile.name : 'BELUM DIPILIH'}. PENTING: nama file ini hanya informasi. Pengguna tetap harus melampirkan file audio asli secara manual ke Claude bersama prompt.`,
+      'PENYESUAIAN VISUAL: susun adegan mengikuti urutan dan timing audio terlampir. Tambahkan subtitle yang sesuai dengan ucapan audio. Sinkronkan gerakan mulut jika memungkinkan. Musik latar opsional, volumenya harus jauh lebih rendah daripada audio utama.',
+      'PEMERIKSAAN SEBELUM EKSPOR: pastikan audio terlampir tetap utuh dari awal sampai akhir, tidak terpotong, dan seluruh visual mengikuti isi audio. Jika lingkungan tidak dapat mempertahankan atau memproses file audio, jelaskan keterbatasannya dan jangan mengklaim audio sudah terpasang.',
       'Jika lingkungan Claude tidak dapat merender atau mengekspor MP4 secara langsung, jelaskan keterbatasannya dan berikan artefak/kode produksi yang benar-benar dapat dijalankan. Jangan mengklaim MP4 selesai jika file belum dibuat.',
       'NASKAH FINAL:',
       typeof script === 'string' ? script : JSON.stringify(script, null, 2),
@@ -243,14 +249,41 @@
     const promptBox = document.getElementById('claude-video-prompt');
     const copyPromptBtn = document.getElementById('btn-copy-claude-prompt');
     const openClaudeBtn = document.getElementById('btn-open-claude');
+    const audioUploadInput = document.getElementById('manual-audio-upload');
+    const audioPlayer = document.getElementById('manual-audio-player');
+    const audioStatus = document.getElementById('manual-audio-status');
     const uploadInput = document.getElementById('manual-video-upload');
     const manualStatus = document.getElementById('manual-video-status');
     let manualVideoUrl = null;
+    let manualAudioUrl = null;
+    let selectedAudioFile = null;
 
     const refreshClaudePrompt = () => {
       const project = Nexora.workflowEngine.projects.find((p) => p.id === selectedProjectId);
-      if (promptBox && project) promptBox.value = buildClaudePrompt(project);
+      if (promptBox && project) promptBox.value = buildClaudePrompt(project, selectedAudioFile);
     };
+
+    if (audioUploadInput) {
+      audioUploadInput.addEventListener('change', () => {
+        const file = audioUploadInput.files && audioUploadInput.files[0];
+        if (!file) return;
+        if (!(file.type.startsWith('audio/') || /\.(mp3|wav|m4a|ogg)$/i.test(file.name))) {
+          Nexora.notificationsUI.showToast('Pilih file audio MP3/WAV/M4A yang valid.', 'warning');
+          audioUploadInput.value = '';
+          return;
+        }
+        if (manualAudioUrl) URL.revokeObjectURL(manualAudioUrl);
+        selectedAudioFile = file;
+        manualAudioUrl = URL.createObjectURL(file);
+        if (audioPlayer) {
+          audioPlayer.src = manualAudioUrl;
+          audioPlayer.classList.remove('hidden');
+        }
+        if (audioStatus) audioStatus.textContent = `Audio siap: ${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB. Salin prompt, lalu lampirkan file audio asli secara manual di Claude.`;
+        refreshClaudePrompt();
+        Nexora.notificationsUI.showToast('Audio TTS dimuat. Prompt sudah diperbarui.', 'success');
+      });
+    }
 
     if (copyPromptBtn) {
       copyPromptBtn.addEventListener('click', async () => {
@@ -271,6 +304,8 @@
       openClaudeBtn.addEventListener('click', () => {
         refreshClaudePrompt();
         window.open('https://claude.ai/new', '_blank', 'noopener');
+        if (selectedAudioFile) Nexora.notificationsUI.showToast('Di Claude, lampirkan file audio yang sama secara manual lalu tempel prompt.', 'info');
+        else Nexora.notificationsUI.showToast('Pilih audio MP3 terlebih dahulu, lalu salin prompt.', 'warning');
       });
     }
 

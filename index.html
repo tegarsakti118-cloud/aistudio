@@ -385,6 +385,12 @@
               <button id="btn-copy-claude-prompt" type="button" class="rounded-xl bg-violet-700 px-4 py-2.5 text-xs font-bold text-white">📋 Salin Prompt Claude</button>
               <button id="btn-open-claude" type="button" class="rounded-xl border border-violet-300 bg-white px-4 py-2.5 text-xs font-bold text-violet-800">Buka Claude AI ↗</button>
             </div>
+            <div class="space-y-1 rounded-xl border border-violet-200 bg-white p-3">
+              <label for="manual-audio-upload" class="text-xs font-bold text-slate-800">🎧 Unggah audio TTS (MP3) untuk paket Claude</label>
+              <input id="manual-audio-upload" type="file" accept="audio/mpeg,audio/mp3,audio/wav,audio/*" class="block w-full rounded-xl border border-violet-200 bg-white p-2 text-xs" />
+              <audio id="manual-audio-player" controls class="hidden w-full mt-2"></audio>
+              <p id="manual-audio-status" class="text-[10px] text-slate-600">Belum ada audio. Pilih MP3 hasil TTS; setelah itu salin prompt dan lampirkan MP3 secara manual di Claude.</p>
+            </div>
             <textarea id="claude-video-prompt" rows="8" readonly class="w-full rounded-xl border border-violet-200 bg-white p-3 text-[11px] leading-5 text-slate-700" placeholder="Prompt produksi akan dibuat dari naskah proyek..."></textarea>
             <div class="space-y-1">
               <label for="manual-video-upload" class="text-xs font-bold text-slate-800">Unggah MP4 hasil Claude</label>

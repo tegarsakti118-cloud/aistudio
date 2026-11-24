@@ -23,25 +23,78 @@
     return new Date().toISOString().slice(0, 10);
   }
 
-  function toBulletLines(arr, prefix = '• ') {
-    if (!Array.isArray(arr) || arr.length === 0) return '• (Tidak ada data)';
-    return arr.map((item) => `${prefix}${typeof item === 'object' ? JSON.stringify(item) : item}`).join('\n');
+  
+function toBulletLines(arr, prefix = '• ') {
+  if (!Array.isArray(arr) || arr.length === 0) {
+    return '• (Tidak ada data)';
   }
 
-  function formatScenesText(scenes) {
-    if (!Array.isArray(scenes) || scenes.length === 0) return '1. (Belum ada adegan)';
-    return scenes
-      .map((sc, idx) => {
-        if (typeof sc === 'string') return `${idx + 1}. ${sc}`;
-        const no = sc.scene_no || idx + 1;
-        const dur = sc.duration_sec ? ` (${sc.duration_sec}d)` : '';
-        const spk = sc.speaker ? `[${sc.speaker}] ` : '';
-        const dlg = sc.dialogue || sc.narration || sc.text || '';
-        const vis = sc.visual_direction ? `\n   🎥 Visual: ${sc.visual_direction}` : '';
-        return `${no}.${dur} ${spk}${dlg}${vis}`;
+  return arr.map((item) => {
+    if (typeof item !== 'object' || item === null) {
+      return `${prefix}${item}`;
+    }
+
+    return prefix + Object.entries(item)
+      .filter(([key, value]) => value !== null && value !== undefined && value !== '')
+      .map(([key, value]) => {
+        const label = key
+          .replace(/_/g, ' ')
+          .replace(/\b\w/g, (char) => char.toUpperCase());
+
+        const formattedValue = Array.isArray(value)
+          ? value.join(', ')
+          : typeof value === 'object'
+            ? JSON.stringify(value)
+            : String(value);
+
+        return `${label}: ${formattedValue}`;
       })
-      .join('\n');
+      .join('\n   ');
+  }).join('\n\n');
+}
+
+
+  
+function formatScenesText(scenes) {
+  if (!Array.isArray(scenes) || scenes.length === 0) {
+    return 'Belum ada detail adegan.';
   }
+
+  return scenes.map((scene, index) => {
+    if (typeof scene === 'string') {
+      return `${index + 1}. ${scene}`;
+    }
+
+    const no = scene.scene_no || index + 1;
+    const duration = scene.duration_sec
+      ? `${scene.duration_sec} detik`
+      : '-';
+
+    const speaker = scene.speaker || 'Narator';
+    const dialogue = scene.dialogue || '-';
+    const narration = scene.narration || '';
+    const visual = scene.visual_direction || scene.shot_prompt || '-';
+    const camera = scene.camera_direction || scene.camera || '';
+    const motion = scene.motion || '';
+    const mood = scene.mood || '';
+    const audio = scene.audio || '';
+    const subtitle = scene.subtitle || '';
+
+    return [
+      `🎬 ADEGAN ${no} (${duration})`,
+      `👤 Tokoh: ${speaker}`,
+      `💬 Dialog: ${dialogue}`,
+      narration ? `🎙️ Narasi: ${narration}` : '',
+      `🖼️ Visual: ${visual}`,
+      camera ? `📷 Kamera: ${camera}` : '',
+      motion ? `🏃 Gerakan: ${motion}` : '',
+      mood ? `🎭 Suasana: ${mood}` : '',
+      audio ? `🔊 Audio: ${audio}` : '',
+      subtitle ? `💬 Subtitle: ${subtitle}` : ''
+    ].filter(Boolean).join('\n');
+  }).join('\n\n────────────────\n\n');
+}
+
 
   class WorkflowEngine {
     constructor() {
@@ -1126,18 +1179,24 @@
         );
       }
 
-      if (actor === 'dimas') {
-        const statusText = p.verdict === 'PASS' ? 'LAYAK (PASS)' : 'PERLU REVISI';
-        return (
-          `🔍 Hasil Audit Naskah (DIMAS)\n\n` +
-          `• Status Review: ${statusText}\n` +
-          `• Skor Hook: ${p.hook_score ?? '-'}/10 | Skor Pacing: ${p.pacing_score ?? '-'}/10\n` +
-          `• Catatan Audit: ${p.revision_notes || '-'}\n` +
-          (Array.isArray(p.factual_issues) && p.factual_issues.length
-            ? `• Catatan Fakta:\n${toBulletLines(p.factual_issues)}`
-            : '• Akurasi & Nama Tokoh: Aman & orisinal.')
-        );
-      }
+      
+if (actor === 'dimas') {
+  const statusText = p.verdict === 'PASS'
+    ? '✅ LAYAK (PASS)'
+    : '⚠️ PERLU REVISI';
+
+  return (
+    `🔍 LAPORAN AUDIT NASKAH — DIMAS\n\n` +
+    `Status: ${statusText}\n\n` +
+    `📊 NILAI AUDIT\n` +
+    `• Hook: ${p.hook_score ?? '-'}/10\n` +
+    `• Pacing: ${p.pacing_score ?? '-'}/10\n` +
+    `• Orisinalitas: ${p.originality_score ?? '-'}/10\n\n` +
+    `📝 CATATAN REVISI\n${p.revision_notes || 'Tidak ada catatan.'}\n\n` +
+    `🔎 TEMUAN FAKTA\n${toBulletLines(p.factual_issues)}`
+  );
+}
+
 
       if (actor === 'laras') {
         return (
@@ -1148,27 +1207,48 @@
         );
       }
 
-      if (actor === 'tio') {
-        const statusText = p.verdict === 'PASS' ? 'LAYAK TERBIT (PASS)' : 'PERLU PERBAIKAN';
-        return (
-          `✅ Laporan Quality Control Video (TIO)\n\n` +
-          `• Status QC: ${statusText}\n` +
-          `• Audio: ${p.audio_check || '-'}\n` +
-          `• Subtitle: ${p.subtitle_check || '-'}\n` +
-          `• Catatan: ${p.revision_notes || '-'}`
-        );
-      }
+      
+if (actor === 'tio') {
+  const statusText = p.verdict === 'PASS'
+    ? '✅ LAYAK TERBIT'
+    : '⚠️ PERLU PERBAIKAN';
 
-      if (actor === 'mel') {
-        const tags = Array.isArray(p.hashtags) ? p.hashtags.join(' ') : '-';
-        return (
-          `📢 Paket Siap Publikasi (MEL)\n\n` +
-          `• Rekomendasi Jam Tayang: ${p.recommended_slot || '-'}\n\n` +
-          `✍️ Caption Final:\n${p.final_caption || '-'}\n\n` +
-          `#️⃣ Hashtag:\n${tags}\n\n` +
-          `👉 Silakan posting manual lalu tekan "✓ Setujui Hasil" untuk konfirmasi tayang.`
-        );
-      }
+  return (
+    `🎬 LAPORAN QUALITY CONTROL — TIO\n\n` +
+    `Status: ${statusText}\n\n` +
+    `📊 SKOR KUALITAS\n` +
+    `• Kesesuaian Naskah: ${p.script_match_score ?? '-'}/10\n` +
+    `• Konsistensi Adegan: ${p.continuity_score ?? '-'}/10\n\n` +
+    `🔊 AUDIO\n${p.audio_check || '-'}\n\n` +
+    `💬 SUBTITLE\n${p.subtitle_check || '-'}\n\n` +
+    `⚠️ RISIKO PRODUKSI\n${toBulletLines(p.production_risks)}\n\n` +
+    `📝 CATATAN REVISI\n${p.revision_notes || 'Tidak ada catatan.'}`
+  );
+}
+
+
+      
+if (actor === 'mel') {
+  const tags = Array.isArray(p.hashtags)
+    ? p.hashtags.join(' ')
+    : '-';
+
+  const metadata = p.metadata || {};
+
+  return (
+    `📢 PAKET PUBLIKASI — MEL\n\n` +
+    `📅 Jadwal Publikasi\n` +
+    `• Rekomendasi: ${p.recommended_slot || '-'}\n\n` +
+    `✍️ CAPTION FINAL\n${p.final_caption || '-'}\n\n` +
+    `#️⃣ HASHTAG\n${tags}\n\n` +
+    `📋 METADATA\n` +
+    `• Judul: ${metadata.title || '-'}\n` +
+    `• Deskripsi: ${metadata.description || '-'}\n` +
+    `• Platform: ${Array.isArray(metadata.platforms) ? metadata.platforms.join(', ') : metadata.platform || '-'}\n\n` +
+    `Status: Siap dipublikasikan secara manual.`
+  );
+}
+
 
       if (stepCfg && stepCfg.type === 'feedback_loop') {
         return (
@@ -1178,15 +1258,20 @@
         );
       }
 
-      if (actor === 'dina') {
-        return (
-          `📊 Evaluasi Performa Konten (DINA)\n\n` +
-          `• Retensi Penonton: ${p.retention_eval || '-'}\n` +
-          `• Engagement Rate: ${p.engagement_rate || '-'}\n\n` +
-          `🏆 Pola Berhasil:\n${toBulletLines(p.winning_patterns)}\n\n` +
-          `🚀 Rekomendasi Berikutnya:\n${toBulletLines(p.next_cycle_recommendations)}`
-        );
-      }
+      
+if (actor === 'dina') {
+  return (
+    `📊 ANALISIS PERFORMA — DINA\n\n` +
+    `📈 HASIL EVALUASI\n` +
+    `• Views: ${p.views ?? '-'}\n` +
+    `• Retensi: ${p.retention_eval || '-'}\n` +
+    `• Engagement: ${p.engagement_rate || '-'}\n\n` +
+    `🏆 POLA YANG BERHASIL\n${toBulletLines(p.winning_patterns)}\n\n` +
+    `⚠️ TITIK LEMAH\n${toBulletLines(p.weak_points)}\n\n` +
+    `🚀 REKOMENDASI BERIKUTNYA\n${toBulletLines(p.next_cycle_recommendations)}`
+  );
+}
+
 
       return Object.entries(p)
         .map(([k, v]) => `• ${k}: ${Array.isArray(v) ? v.join(', ') : typeof v === 'object' && v !== null ? JSON.stringify(v) : v}`)

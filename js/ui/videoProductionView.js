@@ -35,6 +35,38 @@
     a.remove();
   }
 
+  function parseScriptPayload(script) {
+    if (!script) return null;
+    if (typeof script === 'object') return script;
+    if (typeof script === 'string') {
+      const trimmed = script.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+        try { return JSON.parse(trimmed); } catch (_) { return null; }
+      }
+    }
+    return null;
+  }
+
+  function buildAllTtsText(project) {
+    const raw = getScriptForProject(Nexora.workflowEngine, project);
+    const data = parseScriptPayload(raw);
+    if (!data || !Array.isArray(data.scenes)) {
+      return 'Naskah belum memiliki struktur scenes yang bisa dipisahkan otomatis. Periksa Naskah Final atau format JSON proyek.';
+    }
+    const blocks = data.scenes.map((scene, index) => {
+      const sceneNo = scene.scene_no || index + 1;
+      const speaker = scene.speaker || (scene.narration ? 'Narator' : 'Belum ditentukan');
+      const lines = [];
+      if (scene.dialogue) lines.push(String(scene.dialogue).trim());
+      if (scene.narration) lines.push(String(scene.narration).trim());
+      const spokenText = lines.filter(Boolean).join('\n');
+      if (!spokenText) return '';
+      const mood = scene.mood ? ` [${scene.mood}]` : '';
+      return `SCENE ${String(sceneNo).padStart(2, '0')} — ${speaker}${mood}\n${spokenText}`;
+    }).filter(Boolean);
+    return blocks.length ? blocks.join('\n\n') : 'Tidak ditemukan dialog atau narasi pada naskah.';
+  }
+
   function buildClaudePrompt(project, audioFile) {
     const wf = Nexora.workflowEngine;
     const script = getScriptForProject(wf, project);
@@ -248,6 +280,8 @@
 
     const promptBox = document.getElementById('claude-video-prompt');
     const copyPromptBtn = document.getElementById('btn-copy-claude-prompt');
+    const ttsBox = document.getElementById('all-scenes-tts-text');
+    const copyTtsBtn = document.getElementById('btn-copy-all-tts');
     const openClaudeBtn = document.getElementById('btn-open-claude');
     const audioUploadInput = document.getElementById('manual-audio-upload');
     const audioPlayer = document.getElementById('manual-audio-player');
@@ -260,8 +294,26 @@
 
     const refreshClaudePrompt = () => {
       const project = Nexora.workflowEngine.projects.find((p) => p.id === selectedProjectId);
-      if (promptBox && project) promptBox.value = buildClaudePrompt(project, selectedAudioFile);
+      if (project) {
+        if (promptBox) promptBox.value = buildClaudePrompt(project, selectedAudioFile);
+        if (ttsBox) ttsBox.value = buildAllTtsText(project);
+      }
     };
+
+    if (copyTtsBtn) {
+      copyTtsBtn.addEventListener('click', async () => {
+        refreshClaudePrompt();
+        if (!ttsBox || !ttsBox.value) return;
+        try {
+          await navigator.clipboard.writeText(ttsBox.value);
+          Nexora.notificationsUI.showToast('Semua TTS adegan berhasil disalin.', 'success');
+        } catch (_) {
+          ttsBox.focus();
+          ttsBox.select();
+          Nexora.notificationsUI.showToast('Clipboard tidak tersedia. Tekan lama teks lalu salin.', 'warning');
+        }
+      });
+    }
 
     if (audioUploadInput) {
       audioUploadInput.addEventListener('change', () => {

@@ -83,7 +83,7 @@
     }
   }
 
-  function buildClaudePrompt(project, audioFile) {
+  function buildClaudePrompt(project, audioFile, audioDurationSec) {
     const wf = Nexora.workflowEngine;
     const serial = getSerialConfig(project.id);
     const script = getScriptForProject(wf, project);
@@ -103,7 +103,10 @@
       `CATATAN KESINAMBUNGAN: ${serial.continuityNotes || 'Pertahankan desain karakter, pakaian, warna, suara, lokasi, dan fakta cerita yang sudah ditetapkan.'}`,
       `PENGAIT PART BERIKUTNYA: ${serial.nextHook || 'Akhiri dengan penutup yang memuaskan sekaligus menyisakan rasa penasaran secara alami.'}`,
       'ATURAN SERIAL: episode ini harus terasa sebagai bagian dari satu cerita. Jangan mereset karakter atau memperkenalkan perubahan mendadak. Jika Part lebih dari 1, lanjutkan dari ringkasan sebelumnya. Jangan menyelesaikan seluruh konflik serial dalam satu episode kecuali naskah memerintahkannya.',
-      'FORMAT: vertikal 9:16, target 30–60 detik kecuali durasi naskah menentukan lain.',
+      'FORMAT: vertikal 9:16. DURASI FLEKSIBEL, jangan memaksakan video menjadi 15, 30, atau 45 detik jika isi membutuhkan waktu lebih panjang.',
+      'ATURAN DURASI ADEGAN WAJIB: angka duration_sec di storyboard hanyalah perkiraan awal, bukan batas waktu. Hitung durasi final dari panjang audio TTS yang benar-benar dilampirkan. Setiap dialog/narasi harus selesai terdengar dengan kecepatan bicara natural. Beri ruang untuk jeda, ekspresi, gerakan karakter, dan transisi. Jangan mempercepat suara, memotong audio, atau memadatkan dialog agar cocok dengan durasi storyboard.',
+      `DURASI AUDIO TERDETEKSI DI NEXORA: ${Number.isFinite(audioDurationSec) && audioDurationSec > 0 ? `${Math.round(audioDurationSec)} detik` : 'Belum diketahui; ukur langsung dari file audio terlampir di Claude'}. Durasi video final minimal harus mencakup seluruh audio utama dari awal sampai akhir, ditambah waktu visual/transisi yang diperlukan.`,
+      'Jika satu file audio berisi seluruh adegan, dengarkan/analisis urutan ucapan dan tempatkan pergantian adegan mengikuti timing audio. Jika audio dipisah per adegan, gunakan durasi masing-masing file untuk menentukan panjang adegan. Jangan menganggap semua adegan berdurasi sama.',
       'ATURAN TOKOH: nama tokoh cerita harus orisinal. DILARANG memakai nama karyawan Nexora seperti RAKA, SARI, BIMA, DIMAS, LARAS, TIO, MEL, atau DINA sebagai nama tokoh cerita. Pertahankan wajah, pakaian, warna, proporsi, dan suara setiap tokoh secara konsisten di semua adegan.',
       'ATURAN PRODUKSI VISUAL: buat animasi bergerak yang berkelanjutan pada setiap adegan, dengan gestur tubuh, ekspresi wajah, gerakan kamera, dan transisi yang halus. Dilarang membuat slideshow, rangkaian gambar diam, atau adegan yang hanya diberi efek zoom.',
       'ATURAN AUDIO WAJIB: ikuti jenis suara yang tertulis di NASKAH FINAL. Jika naskah berisi narasi, hasilkan voice-over narator. Jika naskah berisi dialog tokoh, ucapkan dialog tersebut dengan suara tokohnya. Jika berisi keduanya, hasilkan keduanya sesuai urutan naskah. Tidak wajib menambahkan percakapan antartokoh jika naskah memang tidak memuat percakapan.',
@@ -316,11 +319,12 @@
     let manualVideoUrl = null;
     let manualAudioUrl = null;
     let selectedAudioFile = null;
+    let selectedAudioDurationSec = null;
 
     const refreshClaudePrompt = () => {
       const project = Nexora.workflowEngine.projects.find((p) => p.id === selectedProjectId);
       if (project) {
-        if (promptBox) promptBox.value = buildClaudePrompt(project, selectedAudioFile);
+        if (promptBox) promptBox.value = buildClaudePrompt(project, selectedAudioFile, selectedAudioDurationSec);
         if (ttsBox) ttsBox.value = buildAllTtsText(project);
       }
     };
@@ -392,9 +396,15 @@
         if (manualAudioUrl) URL.revokeObjectURL(manualAudioUrl);
         selectedAudioFile = file;
         manualAudioUrl = URL.createObjectURL(file);
+        selectedAudioDurationSec = null;
         if (audioPlayer) {
           audioPlayer.src = manualAudioUrl;
           audioPlayer.classList.remove('hidden');
+          audioPlayer.onloadedmetadata = () => {
+            selectedAudioDurationSec = Number.isFinite(audioPlayer.duration) ? audioPlayer.duration : null;
+            refreshClaudePrompt();
+            if (audioStatus && selectedAudioDurationSec) audioStatus.textContent = `Audio siap: ${file.name} • ${selectedAudioDurationSec.toFixed(1)} detik • ${(file.size / 1024 / 1024).toFixed(2)} MB. Salin prompt, lalu lampirkan file audio asli secara manual di Claude.`;
+          };
         }
         if (audioStatus) audioStatus.textContent = `Audio siap: ${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB. Salin prompt, lalu lampirkan file audio asli secara manual di Claude.`;
         refreshClaudePrompt();

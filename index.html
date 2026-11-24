@@ -381,6 +381,21 @@
               <h3 class="text-sm font-extrabold text-violet-950">☁️ Produksi Video Manual via Claude</h3>
               <p class="text-[11px] leading-5 text-violet-900">Nexora menyiapkan prompt produksi dari naskah, karakter, dan storyboard. Lu membuat video langsung di Claude, lalu unggah MP4 hasilnya di sini. Agnes tidak dipanggil otomatis.</p>
             </div>
+            <section class="space-y-2 rounded-xl border border-fuchsia-200 bg-fuchsia-50 p-3">
+              <div>
+                <h4 class="text-xs font-extrabold text-fuchsia-950">🎞️ Mode Serial Animasi Bersambung</h4>
+                <p class="text-[10px] leading-4 text-fuchsia-900">Gunakan identitas serial yang sama untuk setiap part. Ringkasan part sebelumnya membantu Claude menjaga kesinambungan cerita dan karakter.</p>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input id="serial-title" maxlength="100" placeholder="Judul serial (contoh: Petualangan Fajar)" class="w-full rounded-xl border border-fuchsia-200 bg-white px-3 py-2.5 text-xs">
+                <input id="serial-episode" type="number" min="1" max="999" value="1" placeholder="Nomor part" class="w-full rounded-xl border border-fuchsia-200 bg-white px-3 py-2.5 text-xs">
+                <textarea id="serial-previous-summary" rows="2" maxlength="1200" placeholder="Ringkasan part sebelumnya (kosongkan untuk Part 1)" class="sm:col-span-2 w-full rounded-xl border border-fuchsia-200 bg-white p-3 text-xs"></textarea>
+                <textarea id="serial-continuity-notes" rows="2" maxlength="1200" placeholder="Catatan kesinambungan: karakter, lokasi, konflik, benda penting..." class="sm:col-span-2 w-full rounded-xl border border-fuchsia-200 bg-white p-3 text-xs"></textarea>
+                <input id="serial-next-hook" maxlength="500" placeholder="Pengait untuk part berikutnya (opsional)" class="sm:col-span-2 w-full rounded-xl border border-fuchsia-200 bg-white px-3 py-2.5 text-xs">
+              </div>
+              <p id="serial-save-status" class="text-[10px] text-fuchsia-800">Pengaturan serial disimpan lokal di browser pada perangkat ini.</p>
+            </section>
+
             <div class="space-y-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <label for="all-scenes-tts-text" class="text-xs font-bold text-emerald-950">🗣️ Naskah TTS semua scene</label>

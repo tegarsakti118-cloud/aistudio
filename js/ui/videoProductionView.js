@@ -67,8 +67,25 @@
     return blocks.length ? blocks.join('\n\n') : 'Tidak ditemukan dialog atau narasi pada naskah.';
   }
 
+  function getSerialConfig(projectId) {
+    const key = `nexora_serial_config_v1_${projectId}`;
+    try {
+      const saved = JSON.parse(localStorage.getItem(key) || '{}');
+      return {
+        title: saved.title || '',
+        episode: Math.max(1, Number(saved.episode) || 1),
+        previousSummary: saved.previousSummary || '',
+        continuityNotes: saved.continuityNotes || '',
+        nextHook: saved.nextHook || ''
+      };
+    } catch (_) {
+      return { title: '', episode: 1, previousSummary: '', continuityNotes: '', nextHook: '' };
+    }
+  }
+
   function buildClaudePrompt(project, audioFile) {
     const wf = Nexora.workflowEngine;
+    const serial = getSerialConfig(project.id);
     const script = getScriptForProject(wf, project);
     const artifacts = wf.getProjectArtifacts(project.id);
     const laras = artifacts.find((a) => a.employee_id === 'laras');
@@ -79,6 +96,13 @@
       `JUDUL PROYEK: ${project.title}`,
       `NICHE: ${project.niche || '-'}`,
       `PLATFORM: ${project.target_platform || 'TikTok / Reels / Shorts'}`,
+      'FORMAT SERIAL: produksi ini adalah satu episode dari serial animasi cerita bersambung, bukan video edukasi lepas. Gunakan gaya film pendek animasi 3D chibi sinematik seperti serial kartun pendek: karakter punya bentuk tubuh chibi, wajah ekspresif, gestur jelas, pencahayaan sinematik, latar konsisten, dan gerakan kamera dinamis. Jangan membuat presentasi, infografik statis, atau slideshow.',
+      `JUDUL SERIAL: ${serial.title || project.title}`,
+      `EPISODE / PART: ${serial.episode}`,
+      `RINGKASAN PART SEBELUMNYA: ${serial.previousSummary || (serial.episode === 1 ? 'Ini Part 1. Perkenalkan dunia cerita dan tokoh secara alami.' : 'Belum diberikan. Jangan mengarang kejadian part sebelumnya; mulai dari informasi naskah episode ini.')}`,
+      `CATATAN KESINAMBUNGAN: ${serial.continuityNotes || 'Pertahankan desain karakter, pakaian, warna, suara, lokasi, dan fakta cerita yang sudah ditetapkan.'}`,
+      `PENGAIT PART BERIKUTNYA: ${serial.nextHook || 'Akhiri dengan penutup yang memuaskan sekaligus menyisakan rasa penasaran secara alami.'}`,
+      'ATURAN SERIAL: episode ini harus terasa sebagai bagian dari satu cerita. Jangan mereset karakter atau memperkenalkan perubahan mendadak. Jika Part lebih dari 1, lanjutkan dari ringkasan sebelumnya. Jangan menyelesaikan seluruh konflik serial dalam satu episode kecuali naskah memerintahkannya.',
       'FORMAT: vertikal 9:16, target 30–60 detik kecuali durasi naskah menentukan lain.',
       'ATURAN TOKOH: nama tokoh cerita harus orisinal. DILARANG memakai nama karyawan Nexora seperti RAKA, SARI, BIMA, DIMAS, LARAS, TIO, MEL, atau DINA sebagai nama tokoh cerita. Pertahankan wajah, pakaian, warna, proporsi, dan suara setiap tokoh secara konsisten di semua adegan.',
       'ATURAN PRODUKSI VISUAL: buat animasi bergerak yang berkelanjutan pada setiap adegan, dengan gestur tubuh, ekspresi wajah, gerakan kamera, dan transisi yang halus. Dilarang membuat slideshow, rangkaian gambar diam, atau adegan yang hanya diberi efek zoom.',
@@ -209,6 +233,7 @@
     if (selectEl) {
       selectEl.addEventListener('change', (e) => {
         selectedProjectId = e.target.value;
+        loadSerialFields();
         render();
       });
     }
@@ -299,6 +324,46 @@
         if (ttsBox) ttsBox.value = buildAllTtsText(project);
       }
     };
+
+    const serialFields = {
+      title: document.getElementById('serial-title'),
+      episode: document.getElementById('serial-episode'),
+      previousSummary: document.getElementById('serial-previous-summary'),
+      continuityNotes: document.getElementById('serial-continuity-notes'),
+      nextHook: document.getElementById('serial-next-hook')
+    };
+    const serialStatus = document.getElementById('serial-save-status');
+    const loadSerialFields = () => {
+      const cfg = getSerialConfig(selectedProjectId);
+      if (serialFields.title) serialFields.title.value = cfg.title;
+      if (serialFields.episode) serialFields.episode.value = String(cfg.episode);
+      if (serialFields.previousSummary) serialFields.previousSummary.value = cfg.previousSummary;
+      if (serialFields.continuityNotes) serialFields.continuityNotes.value = cfg.continuityNotes;
+      if (serialFields.nextHook) serialFields.nextHook.value = cfg.nextHook;
+    };
+    const saveSerialFields = () => {
+      if (!selectedProjectId) return;
+      const cfg = {
+        title: serialFields.title?.value.trim() || '',
+        episode: Math.max(1, Number(serialFields.episode?.value) || 1),
+        previousSummary: serialFields.previousSummary?.value.trim() || '',
+        continuityNotes: serialFields.continuityNotes?.value.trim() || '',
+        nextHook: serialFields.nextHook?.value.trim() || ''
+      };
+      try {
+        localStorage.setItem(`nexora_serial_config_v1_${selectedProjectId}`, JSON.stringify(cfg));
+        if (serialStatus) serialStatus.textContent = `Pengaturan Part ${cfg.episode} tersimpan lokal di browser ini.`;
+      } catch (_) {
+        if (serialStatus) serialStatus.textContent = 'Penyimpanan lokal tidak tersedia. Isian tetap bisa dipakai selama halaman terbuka.';
+      }
+      refreshClaudePrompt();
+    };
+    Object.values(serialFields).forEach((el) => {
+      if (!el) return;
+      el.addEventListener('input', saveSerialFields);
+      el.addEventListener('change', saveSerialFields);
+    });
+    loadSerialFields();
 
     if (copyTtsBtn) {
       copyTtsBtn.addEventListener('click', async () => {

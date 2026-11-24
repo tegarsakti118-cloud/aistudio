@@ -35,6 +35,32 @@
     a.remove();
   }
 
+  function buildClaudePrompt(project) {
+    const wf = Nexora.workflowEngine;
+    const script = getScriptForProject(wf, project);
+    const artifacts = wf.getProjectArtifacts(project.id);
+    const laras = artifacts.find((a) => a.employee_id === 'laras');
+    const characters = Nexora.characterLibrary ? Nexora.characterLibrary.list() : [];
+    const sceneData = laras ? laras.content : null;
+    return [
+      'ANDA ADALAH SUTRADARA ANIMASI DAN PEMBUAT VIDEO. Buat video final sungguhan, bukan storyboard, bukan kumpulan gambar diam, dan bukan slideshow.',
+      `JUDUL PROYEK: ${project.title}`,
+      `NICHE: ${project.niche || '-'}`,
+      `PLATFORM: ${project.target_platform || 'TikTok / Reels / Shorts'}`,
+      'FORMAT: vertikal 9:16, target 30–60 detik kecuali durasi naskah menentukan lain.',
+      'ATURAN TOKOH: nama tokoh cerita harus orisinal. DILARANG memakai nama karyawan Nexora seperti RAKA, SARI, BIMA, DIMAS, LARAS, TIO, MEL, atau DINA sebagai nama tokoh cerita. Pertahankan wajah, pakaian, warna, proporsi, dan suara setiap tokoh secara konsisten di semua adegan.',
+      'ATURAN PRODUKSI: tampilkan gerakan nyata, perubahan pose, ekspresi, pergerakan kamera, dan transisi antarscene. Sertakan dialog/narasi Bahasa Indonesia, musik latar yang sesuai, efek suara seperlunya, dan subtitle yang sinkron. Jangan mengganti adegan dengan gambar statis.',
+      'Jika lingkungan Claude tidak dapat merender atau mengekspor MP4 secara langsung, jelaskan keterbatasannya dan berikan artefak/kode produksi yang benar-benar dapat dijalankan. Jangan mengklaim MP4 selesai jika file belum dibuat.',
+      'NASKAH FINAL:',
+      typeof script === 'string' ? script : JSON.stringify(script, null, 2),
+      'STORYBOARD / ARAHAN LARAS:',
+      sceneData ? JSON.stringify(sceneData, null, 2) : 'Belum ada storyboard LARAS. Kembangkan storyboard dari naskah.',
+      'CHARACTER BIBLE DARI CHARACTER LIBRARY:',
+      JSON.stringify(characters, null, 2),
+      'OUTPUT YANG DIMINTA: video MP4 final 9:16, seluruh adegan bergerak, audio dialog/narasi, musik, dan subtitle tertanam atau file subtitle terpisah. Berikan tautan/file hasil yang benar-benar dapat diunduh.'
+    ].join('\n\n');
+  }
+
   function render() {
     const wf = Nexora.workflowEngine;
     const vr = Nexora.videoRenderer;
@@ -214,69 +240,63 @@
       });
     }
 
-    const btnAgnes = document.getElementById('btn-agnes-scenes');
-    if (btnAgnes) {
-      btnAgnes.addEventListener('click', async () => {
-        if (btnAgnes.dataset.busy === '1') return;
-        const wf = Nexora.workflowEngine;
-        const project = wf && wf.projects.find((p) => p.id === selectedProjectId);
-        const script = getScriptForProject(wf, project);
-        const service = Nexora.agnesVideoService;
-        const panel = document.getElementById('agnes-scenes-panel');
-        const statusEl = document.getElementById('agnes-scenes-status');
-        const progressEl = document.getElementById('agnes-scenes-progress');
-        const resultsEl = document.getElementById('agnes-scenes-results');
-        if (!project || !script || !service) {
-          Nexora.notificationsUI.showToast('Proyek, naskah, atau modul Agnes belum siap.', 'warning');
-          return;
-        }
-        btnAgnes.dataset.busy = '1';
-        btnAgnes.disabled = true;
-        btnAgnes.classList.add('opacity-50');
-        if (panel) panel.classList.remove('hidden');
-        if (resultsEl) resultsEl.innerHTML = '';
-        if (statusEl) statusEl.textContent = 'Memproses';
+    const promptBox = document.getElementById('claude-video-prompt');
+    const copyPromptBtn = document.getElementById('btn-copy-claude-prompt');
+    const openClaudeBtn = document.getElementById('btn-open-claude');
+    const uploadInput = document.getElementById('manual-video-upload');
+    const manualStatus = document.getElementById('manual-video-status');
+    let manualVideoUrl = null;
+
+    const refreshClaudePrompt = () => {
+      const project = Nexora.workflowEngine.projects.find((p) => p.id === selectedProjectId);
+      if (promptBox && project) promptBox.value = buildClaudePrompt(project);
+    };
+
+    if (copyPromptBtn) {
+      copyPromptBtn.addEventListener('click', async () => {
+        refreshClaudePrompt();
+        if (!promptBox || !promptBox.value) return;
         try {
-          const clips = await service.generateScenes({
-            project,
-            script,
-            onProgress: (p) => {
-              if (!progressEl) return;
-              const stage = p.phase === 'creating' ? 'Mengirim permintaan' : 'Menunggu hasil dari Agnes';
-              const scene = p.sceneNo || (p.index + 1);
-              progressEl.textContent = `${stage} • Adegan ${scene}/${p.total}${p.progress != null ? ` • ${p.progress}%` : ''}`;
-            },
-            onClip: (clip) => {
-              if (!resultsEl) return;
-              const row = document.createElement('div');
-              row.className = 'rounded-xl border border-violet-200 bg-white p-2 flex items-center justify-between gap-2';
-              const label = document.createElement('span');
-              label.className = 'text-[11px] font-bold text-slate-700';
-              label.textContent = `Adegan ${clip.sceneNo} • Selesai`;
-              const link = document.createElement('a');
-              link.href = clip.url;
-              link.target = '_blank';
-              link.rel = 'noopener';
-              link.textContent = 'Buka klip';
-              link.className = 'text-[11px] font-bold text-violet-700 underline';
-              row.append(label, link);
-              resultsEl.appendChild(row);
-            }
-          });
-          if (statusEl) statusEl.textContent = `${clips.length} klip selesai`;
-          if (progressEl) progressEl.textContent = 'Semua adegan selesai. Klip tersedia satu per satu di bawah.';
-          Nexora.notificationsUI.showToast(`${clips.length} klip adegan berhasil dibuat oleh Agnes.`, 'success');
-        } catch (err) {
-          if (statusEl) statusEl.textContent = 'Gagal';
-          if (progressEl) progressEl.textContent = err.message || 'Proses gagal.';
-          Nexora.notificationsUI.showToast(`Agnes: ${err.message}`, 'warning');
-        } finally {
-          btnAgnes.dataset.busy = '0';
-          btnAgnes.disabled = false;
-          btnAgnes.classList.remove('opacity-50');
+          await navigator.clipboard.writeText(promptBox.value);
+          Nexora.notificationsUI.showToast('Prompt produksi berhasil disalin.', 'success');
+        } catch (_) {
+          promptBox.focus();
+          promptBox.select();
+          Nexora.notificationsUI.showToast('Clipboard tidak tersedia. Tekan lama teks lalu salin.', 'warning');
         }
       });
     }
+
+    if (openClaudeBtn) {
+      openClaudeBtn.addEventListener('click', () => {
+        refreshClaudePrompt();
+        window.open('https://claude.ai/new', '_blank', 'noopener');
+      });
+    }
+
+    if (uploadInput) {
+      uploadInput.addEventListener('change', () => {
+        const file = uploadInput.files && uploadInput.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('video/')) {
+          Nexora.notificationsUI.showToast('Pilih file video yang valid.', 'warning');
+          uploadInput.value = '';
+          return;
+        }
+        if (manualVideoUrl) URL.revokeObjectURL(manualVideoUrl);
+        manualVideoUrl = URL.createObjectURL(file);
+        const player = document.getElementById('video-preview-player');
+        const previewWrap = document.getElementById('video-preview-wrap');
+        const meta = document.getElementById('video-file-meta');
+        if (player) player.src = manualVideoUrl;
+        if (previewWrap) previewWrap.classList.remove('hidden');
+        if (meta) meta.textContent = `File lokal: ${file.name} • ${(file.size / 1024 / 1024).toFixed(2)} MB • ${file.type || 'video'}`;
+        if (manualStatus) manualStatus.textContent = `Video dipilih: ${file.name}. File hanya dipreview di browser ini dan belum tersimpan permanen ke cloud.`;
+        Nexora.notificationsUI.showToast('Video berhasil dimuat untuk preview lokal.', 'success');
+      });
+    }
+
+    refreshClaudePrompt();
 
     const btnCancel = document.getElementById('btn-cancel-render');
     if (btnCancel) {

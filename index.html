@@ -376,18 +376,23 @@
         </section>
 
         <div class="bg-white rounded-3xl p-4 border border-sky-100 shadow-sm space-y-3">
-          <div class="flex flex-wrap items-center gap-2">
-            <button id="btn-render-video" type="button" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-teal-500 text-white text-xs font-bold shadow-sm active:scale-95 transition">🎬 Render Video 9:16 Sekarang</button>
-            <button id="btn-agnes-scenes" type="button" class="px-4 py-2.5 rounded-xl bg-violet-700 text-white text-xs font-bold shadow-sm active:scale-95 transition">✨ Generate Klip Adegan via Agnes</button>
-            <button id="btn-cancel-render" type="button" class="hidden px-3.5 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-bold active:scale-95">✕ Batalkan</button>
+          <div class="rounded-2xl border border-violet-200 bg-violet-50 p-3 space-y-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-violet-950">☁️ Produksi Video Manual via Claude</h3>
+              <p class="text-[11px] leading-5 text-violet-900">Nexora menyiapkan prompt produksi dari naskah, karakter, dan storyboard. Lu membuat video langsung di Claude, lalu unggah MP4 hasilnya di sini. Agnes tidak dipanggil otomatis.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button id="btn-copy-claude-prompt" type="button" class="rounded-xl bg-violet-700 px-4 py-2.5 text-xs font-bold text-white">📋 Salin Prompt Claude</button>
+              <button id="btn-open-claude" type="button" class="rounded-xl border border-violet-300 bg-white px-4 py-2.5 text-xs font-bold text-violet-800">Buka Claude AI ↗</button>
+            </div>
+            <textarea id="claude-video-prompt" rows="8" readonly class="w-full rounded-xl border border-violet-200 bg-white p-3 text-[11px] leading-5 text-slate-700" placeholder="Prompt produksi akan dibuat dari naskah proyek..."></textarea>
+            <div class="space-y-1">
+              <label for="manual-video-upload" class="text-xs font-bold text-slate-800">Unggah MP4 hasil Claude</label>
+              <input id="manual-video-upload" type="file" accept="video/mp4,video/webm,video/quicktime" class="block w-full rounded-xl border border-violet-200 bg-white p-2 text-xs" />
+              <p id="manual-video-status" class="text-[10px] text-slate-600">Belum ada video diunggah. Preview upload hanya tersedia selama halaman ini terbuka; penyimpanan permanen cloud memerlukan bucket Storage.</p>
+            </div>
           </div>
-
-          <div id="agnes-scenes-panel" class="hidden rounded-2xl border border-violet-200 bg-violet-50 p-3 space-y-2">
-            <div class="flex items-center justify-between gap-2"><strong class="text-xs text-violet-900">Agnes • Hasil Klip Adegan</strong><span id="agnes-scenes-status" class="text-[10px] font-bold text-violet-700">Menunggu</span></div>
-            <div id="agnes-scenes-progress" class="text-[11px] text-violet-800">Belum ada proses.</div>
-            <div id="agnes-scenes-results" class="space-y-2"></div>
-            <p class="text-[10px] leading-4 text-violet-800">Catatan: tahap ini menghasilkan klip per adegan (4–12 detik). Belum menggabungkan klip menjadi MP4 final, belum membuat dialog/narasi, musik, atau subtitle otomatis.</p>
-          </div>
+          <div class="hidden"><button id="btn-render-video" type="button"></button><button id="btn-cancel-render" type="button"></button><div id="agnes-scenes-panel"><span id="agnes-scenes-status"></span><div id="agnes-scenes-progress"></div><div id="agnes-scenes-results"></div></div><div id="video-render-progress-wrap"><div id="video-render-progress-bar"></div><span id="video-render-progress-text"></span></div><canvas id="video-render-canvas"></canvas></div>
 
           <div id="video-render-progress-wrap" class="hidden space-y-1.5">
             <div class="flex justify-between text-xs font-bold text-sky-700">
